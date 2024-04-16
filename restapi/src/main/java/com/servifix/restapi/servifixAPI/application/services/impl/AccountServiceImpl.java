@@ -17,19 +17,21 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-
+    private final RoleServiceImpl roleServiceImpl;
     private final ModelMapper modelMapper;
 
 
-    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper modelMapper) {
+    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper modelMapper, RoleServiceImpl roleServiceImpl) {
         this.accountRepository = accountRepository;
         this.modelMapper = modelMapper;
+        this.roleServiceImpl = roleServiceImpl;
     }
 
     @Override
     public ApiResponse<AccountResponseDTO> createAccount(AccountRequestDTO accountRequestDTO) {
 
         var account = modelMapper.map(accountRequestDTO, Account.class);
+        account.setRole(roleServiceImpl.getRoleById(accountRequestDTO.getRole()));
         accountRepository.save(account);
 
         var response = modelMapper.map(account, AccountResponseDTO.class);

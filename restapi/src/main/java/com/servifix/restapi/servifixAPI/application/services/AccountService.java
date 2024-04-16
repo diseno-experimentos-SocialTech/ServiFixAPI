@@ -13,5 +13,4 @@ public interface AccountService {
     ApiResponse<Void> deleteAccount(int id);
 
 
-
 }

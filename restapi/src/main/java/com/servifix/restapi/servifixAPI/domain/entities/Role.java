@@ -23,7 +23,4 @@ public class Role {
     @Column(name = "type", length = 15, nullable = false)
     private String type;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Account> accounts;
-
 }

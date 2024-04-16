@@ -3,6 +3,7 @@ package com.servifix.restapi.servifixAPI.application.controller;
 import com.servifix.restapi.servifixAPI.application.dto.request.AccountRequestDTO;
 import com.servifix.restapi.servifixAPI.application.dto.response.AccountResponseDTO;
 import com.servifix.restapi.servifixAPI.application.services.AccountService;
+import com.servifix.restapi.servifixAPI.application.services.RoleService;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +24,7 @@ public class AccountController {
     @Operation(summary = "create a new account")
     @PostMapping("/accounts")
     public ResponseEntity<ApiResponse<AccountResponseDTO>> createAccount(@RequestBody AccountRequestDTO accountRequestDTO) {
+
         var res = accountService.createAccount(accountRequestDTO);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
