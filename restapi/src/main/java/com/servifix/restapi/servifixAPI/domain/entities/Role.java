@@ -1,4 +1,4 @@
-package com.servifix.restapi.domain.entities;
+package com.servifix.restapi.servifixAPI.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,19 +6,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "technicals")
+@Table(name = "roles")
 public class Role {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private int roleId;
+    private int id;
 
     @Column(name = "type", length = 15, nullable = false)
     private String type;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accounts;
 
 }

@@ -1,4 +1,4 @@
-package com.servifix.restapi.domain.entities;
+package com.servifix.restapi.servifixAPI.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
