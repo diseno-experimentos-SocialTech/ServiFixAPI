@@ -33,4 +33,8 @@ public class Technical {
     @Column(name = "description", length = 200, nullable = false)
     private String description;
 
+    @OneToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = true)
+    private Account account;
+
 }
