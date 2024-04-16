@@ -39,5 +39,5 @@ public class Account {
 
     @Column(name = "password", length = 50, nullable = false)
     private String password;
-    
+
 }
