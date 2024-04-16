@@ -29,4 +29,8 @@ public class User {
     @Column(name = "number", length = 9, nullable = false)
     private int number;
 
+    @OneToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = true)
+    private Account account;
+
 }
