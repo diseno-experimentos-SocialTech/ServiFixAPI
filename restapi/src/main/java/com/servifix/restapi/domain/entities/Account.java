@@ -34,10 +34,14 @@ public class Account {
     @Column(name = "birthday", nullable = false)
     private LocalDate birthday;
 
-    @Column( name = "email", length = 50, nullable = false)
+    @Column( name = "email", length = 100, nullable = false)
     private String email;
 
     @Column(name = "password", length = 50, nullable = false)
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
 }
