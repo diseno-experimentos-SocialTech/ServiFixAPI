@@ -29,7 +29,8 @@ public class Notification {
     private LocalDate date;
 
     @Setter
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 }
+
