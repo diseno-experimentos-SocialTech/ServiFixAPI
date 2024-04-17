@@ -31,7 +31,7 @@ public class NotificationController {
     }
 
     @Operation(summary = "create a new notification")
-    @GetMapping("/notifications")
+    @PostMapping("/notifications")
     public ResponseEntity<ApiResponse<NotificationResponseDTO>> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
         var res = notificationService.createNotification(notificationRequestDTO);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
