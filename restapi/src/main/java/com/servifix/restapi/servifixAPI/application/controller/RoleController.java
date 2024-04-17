@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Account", description = "Account API")
+@Tag(name = "Rol", description = "Rol API")
 @RestController
 @RequestMapping("/api/v1/servifix")
 public class RoleController {

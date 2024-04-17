@@ -5,33 +5,33 @@ import com.servifix.restapi.servifixAPI.application.dto.response.AccountResponse
 import com.servifix.restapi.servifixAPI.application.services.AccountService;
 import com.servifix.restapi.servifixAPI.domain.entities.Account;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
+import com.servifix.restapi.servifixAPI.infraestructure.repositories.RoleRepository;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.io.Console;
 import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final RoleServiceImpl roleServiceImpl;
+    private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
 
 
-    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper modelMapper, RoleServiceImpl roleServiceImpl) {
+    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper modelMapper, RoleRepository roleRepository) {
         this.accountRepository = accountRepository;
         this.modelMapper = modelMapper;
-        this.roleServiceImpl = roleServiceImpl;
+        this.roleRepository = roleRepository;
     }
 
     @Override
     public ApiResponse<AccountResponseDTO> createAccount(AccountRequestDTO accountRequestDTO) {
 
         var account = modelMapper.map(accountRequestDTO, Account.class);
-        account.setRole(roleServiceImpl.getRoleById(accountRequestDTO.getRole()));
+        account.setRole(roleRepository.getRoleById(accountRequestDTO.getRole()));
         accountRepository.save(account);
 
         var response = modelMapper.map(account, AccountResponseDTO.class);
@@ -66,6 +66,11 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.deleteById(id);
             return new ApiResponse<>("Account deleted successfully", Estatus.SUCCESS, null);
         }
+    }
+
+    @Override
+    public Account getAccountById(int id) {
+        return accountRepository.getAccountById(id);
     }
 
 }

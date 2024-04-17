@@ -1,5 +1,6 @@
 package com.servifix.restapi.servifixAPI.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "technicals")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Technical {
 
     @Id

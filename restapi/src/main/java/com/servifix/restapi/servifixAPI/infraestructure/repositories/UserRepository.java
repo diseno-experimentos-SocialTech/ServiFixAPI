@@ -1,11 +1,9 @@
 package com.servifix.restapi.servifixAPI.infraestructure.repositories;
 
-import com.servifix.restapi.servifixAPI.domain.entities.Role;
+import com.servifix.restapi.servifixAPI.domain.entities.User;
 import org.springframework.data.repository.CrudRepository;
 
-public interface RoleRepository extends CrudRepository<Role, Integer> {
-
-    Role getRoleById (int id);
+public interface UserRepository extends CrudRepository<User, Integer> {
 
     boolean existsById(int id);
 
