@@ -1,7 +1,7 @@
 package com.servifix.restapi.servifixAPI.application.services.impl;
 
 import com.servifix.restapi.servifixAPI.application.dto.request.RoleRequestDTO;
-import com.servifix.restapi.servifixAPI.application.dto.response.RoleResponseDto;
+import com.servifix.restapi.servifixAPI.application.dto.response.RoleResponseDTO;
 import com.servifix.restapi.servifixAPI.application.services.RoleService;
 import com.servifix.restapi.servifixAPI.domain.entities.Role;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.RoleRepository;
@@ -30,18 +30,18 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public ApiResponse<RoleResponseDto> createRole(RoleRequestDTO roleRequestDTO) {
+    public ApiResponse<RoleResponseDTO> createRole(RoleRequestDTO roleRequestDTO) {
 
         var role = modelMapper.map(roleRequestDTO, Role.class);
         roleRepository.save(role);
 
-        var response = modelMapper.map(role, RoleResponseDto.class);
+        var response = modelMapper.map(role, RoleResponseDTO.class);
 
         return new ApiResponse<>("Role created successfully", Estatus.SUCCESS, response);
     }
 
     @Override
-    public ApiResponse<RoleResponseDto> updateRole(int id, RoleRequestDTO roleRequestDTO) {
+    public ApiResponse<RoleResponseDTO> updateRole(int id, RoleRequestDTO roleRequestDTO) {
 
         Optional<Role> roleOptional = roleRepository.findById(id);
 
@@ -51,7 +51,7 @@ public class RoleServiceImpl implements RoleService{
             Role role = roleOptional.get();
             modelMapper.map(roleRequestDTO, role);
             roleRepository.save(role);
-            RoleResponseDto response = modelMapper.map(role, RoleResponseDto.class);
+            RoleResponseDTO response = modelMapper.map(role, RoleResponseDTO.class);
             return new ApiResponse<>("Role updated successfully", Estatus.SUCCESS, response);
         }
     }

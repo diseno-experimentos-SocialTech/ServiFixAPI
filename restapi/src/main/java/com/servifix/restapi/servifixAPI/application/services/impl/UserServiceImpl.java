@@ -60,8 +60,6 @@ public class UserServiceImpl implements UserService {
 
         var response = modelMapper.map(user, UserResponseDTO.class);
 
-        System.out.println(response);
-
         return new ApiResponse<>("User created successfully", Estatus.SUCCESS, response);
     }
 
@@ -74,6 +72,7 @@ public class UserServiceImpl implements UserService {
         }else {
             User user = userOptional.get();
             modelMapper.map(userRequestDTO, user);
+            user.setAccount(accountRepository.getAccountById(userRequestDTO.getAccount()));
             userRepository.save(user);
             UserResponseDTO response = modelMapper.map(user, UserResponseDTO.class);
             return new ApiResponse<>("User updated successfully", Estatus.SUCCESS, response);

@@ -35,8 +35,8 @@ public class Technical {
     @Column(name = "description", length = 200, nullable = false)
     private String description;
 
-    @OneToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
 }

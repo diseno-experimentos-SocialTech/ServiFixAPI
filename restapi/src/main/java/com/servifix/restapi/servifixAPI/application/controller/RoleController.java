@@ -1,7 +1,7 @@
 package com.servifix.restapi.servifixAPI.application.controller;
 
 import com.servifix.restapi.servifixAPI.application.dto.request.RoleRequestDTO;
-import com.servifix.restapi.servifixAPI.application.dto.response.RoleResponseDto;
+import com.servifix.restapi.servifixAPI.application.dto.response.RoleResponseDTO;
 import com.servifix.restapi.servifixAPI.application.services.RoleService;
 import com.servifix.restapi.servifixAPI.domain.entities.Role;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
@@ -31,14 +31,14 @@ public class RoleController {
 
     @Operation(summary = "create a new role")
     @PostMapping("/roles")
-    public ResponseEntity<ApiResponse<RoleResponseDto>> createRole(@RequestBody RoleRequestDTO roleRequestDTO) {
+    public ResponseEntity<ApiResponse<RoleResponseDTO>> createRole(@RequestBody RoleRequestDTO roleRequestDTO) {
         var res = roleService.createRole(roleRequestDTO);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @Operation(summary = "update an existing role")
     @PutMapping("/roles/{id}")
-    public ResponseEntity<ApiResponse<RoleResponseDto>> updateRole(@PathVariable int id, @RequestBody RoleRequestDTO roleRequestDTO) {
+    public ResponseEntity<ApiResponse<RoleResponseDTO>> updateRole(@PathVariable int id, @RequestBody RoleRequestDTO roleRequestDTO) {
         var res = roleService.updateRole(id, roleRequestDTO);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
