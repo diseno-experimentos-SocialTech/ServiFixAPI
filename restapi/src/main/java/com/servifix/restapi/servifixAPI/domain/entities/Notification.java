@@ -4,33 +4,32 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "accounts")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User {
+public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "address", length = 100, nullable = false)
-    private String address;
+    @Column(name = "title", length = 50, nullable = false)
+    private String title;
 
-    @Column(name = "description", length = 250, nullable = false)
-    private String description;
+    @Column(name = "content", length = 150, nullable = false)
+    private String content;
 
-    @Column(name = "image", length = 200, nullable = false)
-    private String image;
-
-    @Column(name = "number", length = 9, nullable = false)
-    private int number;
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
 
     @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
-
 }

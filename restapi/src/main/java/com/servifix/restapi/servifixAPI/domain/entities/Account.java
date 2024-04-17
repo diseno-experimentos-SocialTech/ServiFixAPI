@@ -36,8 +36,6 @@ public class Account {
     @Column(name = "password", length = 50, nullable = false)
     private String password;
 
-
-
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
