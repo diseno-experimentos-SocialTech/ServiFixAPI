@@ -1,5 +1,6 @@
 package com.servifix.restapi.servifixAPI.application.dto.response;
 
+import com.servifix.restapi.servifixAPI.domain.entities.Job;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,4 +25,5 @@ public class PublicationResponseDTO {
 
     private User user;
 
+    private Job job;
 }

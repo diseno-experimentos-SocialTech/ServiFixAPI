@@ -11,6 +11,7 @@ import com.servifix.restapi.servifixAPI.domain.entities.Account;
 import com.servifix.restapi.servifixAPI.domain.entities.Publication;
 import com.servifix.restapi.servifixAPI.domain.entities.Technical;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
+import com.servifix.restapi.servifixAPI.infraestructure.repositories.JobRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.PublicationRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.UserRepository;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
@@ -27,15 +28,16 @@ import java.util.stream.Collectors;
 public class PublicationServiceImpl implements PublicationService {
 
     private final PublicationRepository publicationRepository;
-
+    private final JobRepository jobRepository;
     private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
 
-    public PublicationServiceImpl(PublicationRepository publicationRepository, ModelMapper modelMapper, UserRepository userRepository) {
+    public PublicationServiceImpl(PublicationRepository publicationRepository, ModelMapper modelMapper, UserRepository userRepository, JobRepository jobRepository) {
         this.publicationRepository = publicationRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+        this.jobRepository = jobRepository;
     }
 
     @Override
@@ -65,6 +67,7 @@ public class PublicationServiceImpl implements PublicationService {
     public ApiResponse<PublicationResponseDTO> createPublication(PublicationRequestDTO publicationRequestDTO) {
         var publication = modelMapper.map(publicationRequestDTO, Publication.class);
         publication.setUser(userRepository.getUserById(publicationRequestDTO.getUser()));
+        publication.setJob(jobRepository.getJobById(publicationRequestDTO.getJob()));
         publicationRepository.save(publication);
 
         var response = modelMapper.map(publication, PublicationResponseDTO.class);
@@ -82,6 +85,7 @@ public class PublicationServiceImpl implements PublicationService {
             Publication publication = publicationOptional.get();
             modelMapper.map(publicationRequestDTO, publication);
             publication.setUser(userRepository.getUserById(publicationRequestDTO.getUser()));
+            publication.setJob(jobRepository.getJobById(publicationRequestDTO.getJob()));
             publicationRepository.save(publication);
             PublicationResponseDTO response = modelMapper.map(publication, PublicationResponseDTO.class);
             return new ApiResponse<>("Publication updated successfully", Estatus.SUCCESS, response);
