@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +28,6 @@ public class Job {
     @Column(name = "description", length = 200, nullable = false)
     private String description;
 
+    @ManyToMany(mappedBy = "jobs")
+    private List<Technical> technicals;
 }

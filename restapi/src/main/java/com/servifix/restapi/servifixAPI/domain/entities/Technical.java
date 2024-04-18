@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +20,7 @@ public class Technical {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int technicalId;
+    private int id;
 
     @Column(name = "police_records", length = 200, nullable = false)
     private String policeRecords;
@@ -38,5 +40,11 @@ public class Technical {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "technical_job",
+            joinColumns = @JoinColumn(name = "technical_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "job_id", referencedColumnName = "id"))
+    private List<Job> jobs;
 
 }
