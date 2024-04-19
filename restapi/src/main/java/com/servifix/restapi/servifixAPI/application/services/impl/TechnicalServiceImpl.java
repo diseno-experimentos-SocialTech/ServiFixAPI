@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +29,12 @@ public class TechnicalServiceImpl implements TechnicalService {
         this.technicalRepository = technicalRepository;
         this.accountRepository = accountRepository;
         this.modelMapper = modelMapper;
+    }
+
+    // validar numero de telefono
+    private static boolean isValidPhoneNumber(String phoneNumber) {
+        String regex = "^[0-9]{9}$";
+        return Pattern.matches(regex, phoneNumber);
     }
 
     @Override
@@ -55,6 +62,11 @@ public class TechnicalServiceImpl implements TechnicalService {
     @Override
     public ApiResponse<TechnicalResponseDTO> createTechnical(TechnicalRequestDTO technicalRequestDTO) {
         var technical = modelMapper.map(technicalRequestDTO, Technical.class);
+
+        if (!isValidPhoneNumber(technical.getNumber())) {
+            return new ApiResponse<>("Invalid phone number. Must be 9 digits", Estatus.ERROR, null);
+        }
+
         technical.setAccount(accountRepository.getAccountById(technicalRequestDTO.getAccount()));
         technicalRepository.save(technical);
 
