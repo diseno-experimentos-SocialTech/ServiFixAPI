@@ -6,6 +6,7 @@ import com.servifix.restapi.servifixAPI.application.services.AccountService;
 import com.servifix.restapi.servifixAPI.domain.entities.Account;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.RoleRepository;
+import com.servifix.restapi.shared.exception.InvalidGenderException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -27,10 +28,16 @@ public class AccountServiceImpl implements AccountService {
         this.roleRepository = roleRepository;
     }
 
+    private boolean isValidGender(String gender) {
+        return gender.equals("Femenino") || gender.equals("Masculino");
+    }
     @Override
     public ApiResponse<AccountResponseDTO> createAccount(AccountRequestDTO accountRequestDTO) {
 
         var account = modelMapper.map(accountRequestDTO, Account.class);
+        if (!isValidGender(account.getGender())) {
+            throw new InvalidGenderException("Invalid gender. Must be Femenino or Masculino");
+        }
         account.setRole(roleRepository.getRoleById(accountRequestDTO.getRole()));
         accountRepository.save(account);
 

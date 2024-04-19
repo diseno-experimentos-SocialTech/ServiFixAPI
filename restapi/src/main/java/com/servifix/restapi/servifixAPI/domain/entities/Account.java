@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "accounts")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Account {
+public class    Account {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private int id;
