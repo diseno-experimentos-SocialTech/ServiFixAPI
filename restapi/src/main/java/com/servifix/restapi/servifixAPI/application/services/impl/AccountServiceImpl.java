@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -31,12 +32,22 @@ public class AccountServiceImpl implements AccountService {
     private boolean isValidGender(String gender) {
         return gender.equals("Femenino") || gender.equals("Masculino");
     }
+
+    private static boolean isValidEmail(String email) {
+        String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
+        return Pattern.matches(regex, email);
+    }
+
     @Override
     public ApiResponse<AccountResponseDTO> createAccount(AccountRequestDTO accountRequestDTO) {
 
         var account = modelMapper.map(accountRequestDTO, Account.class);
         if (!isValidGender(account.getGender())) {
-            throw new InvalidGenderException("Invalid gender. Must be Femenino or Masculino");
+            return new ApiResponse<>("Invalid gender. Must be Femenino or Masculino", Estatus.ERROR,null);
+        }
+        if (!isValidEmail(account.getEmail())){
+            return new ApiResponse<>("Invalid email format. Please use a valid email address", Estatus.ERROR,null);
+
         }
         account.setRole(roleRepository.getRoleById(accountRequestDTO.getRole()));
         accountRepository.save(account);
@@ -55,6 +66,12 @@ public class AccountServiceImpl implements AccountService {
             return new ApiResponse<>("Account not found", Estatus.ERROR, null);
         }else {
             Account account = accountOptional.get();
+            if (!isValidGender(account.getGender())) {
+                return new ApiResponse<>("Invalid gender. Must be Femenino or Masculino", Estatus.ERROR,null);
+            }
+            if (!isValidEmail(account.getEmail())){
+                return new ApiResponse<>("Invalid email format. Please use a valid email address", Estatus.ERROR,null);
+            }
             modelMapper.map(accountRequestDTO, account);
             accountRepository.save(account);
             AccountResponseDTO response = modelMapper.map(account, AccountResponseDTO.class);
