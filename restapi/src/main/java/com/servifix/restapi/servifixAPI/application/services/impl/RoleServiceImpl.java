@@ -23,6 +23,10 @@ public class RoleServiceImpl implements RoleService{
         this.modelMapper = modelMapper;
     }
 
+    private boolean isValidType(String type){
+        return type.equals("Tecnico") || type.equals("Usuario");
+    }
+
     @Override
     public Role getRoleById(int id) {
         Optional<Role> roleOptional = roleRepository.findById(id);
@@ -33,6 +37,9 @@ public class RoleServiceImpl implements RoleService{
     public ApiResponse<RoleResponseDTO> createRole(RoleRequestDTO roleRequestDTO) {
 
         var role = modelMapper.map(roleRequestDTO, Role.class);
+        if (!isValidType(role.getType())){
+            return new ApiResponse<>("Invalid type. Must be Tecnico or Usuario",Estatus.ERROR,null);
+        }
         roleRepository.save(role);
 
         var response = modelMapper.map(role, RoleResponseDTO.class);
@@ -49,6 +56,9 @@ public class RoleServiceImpl implements RoleService{
             return new ApiResponse<>("Role not found", Estatus.ERROR, null);
         }else {
             Role role = roleOptional.get();
+            if (!isValidType(role.getType())){
+                return new ApiResponse<>("Invalid type. Must be Tecnico or Usuario",Estatus.ERROR,null);
+            }
             modelMapper.map(roleRequestDTO, role);
             roleRepository.save(role);
             RoleResponseDTO response = modelMapper.map(role, RoleResponseDTO.class);
