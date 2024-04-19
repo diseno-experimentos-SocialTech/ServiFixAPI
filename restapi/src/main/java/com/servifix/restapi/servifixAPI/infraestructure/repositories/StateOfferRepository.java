@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface StateOfferRepository extends CrudRepository<StateOffer, Integer> {
 
+    StateOffer getStateOfferById(int id);
+
 }

@@ -9,4 +9,5 @@ public interface PublicationRepository extends CrudRepository<Publication, Integ
 
     List<Publication> getPublicationByUserId(Integer userId);
 
+    Publication getPublicationById(Integer id);
 }

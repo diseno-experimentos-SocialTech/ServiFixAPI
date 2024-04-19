@@ -7,6 +7,9 @@ import com.servifix.restapi.servifixAPI.application.services.OfferService;
 import com.servifix.restapi.servifixAPI.domain.entities.Offer;
 import com.servifix.restapi.servifixAPI.domain.entities.Publication;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.OfferRepository;
+import com.servifix.restapi.servifixAPI.infraestructure.repositories.PublicationRepository;
+import com.servifix.restapi.servifixAPI.infraestructure.repositories.StateOfferRepository;
+import com.servifix.restapi.servifixAPI.infraestructure.repositories.TechnicalRepository;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -20,11 +23,20 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
 
+    private final TechnicalRepository technicalRepository;
+
+    private final PublicationRepository publicationRepository;
+
+    private final StateOfferRepository stateOfferRepository;
+
     private final ModelMapper modelMapper;
 
-    public OfferServiceImpl(OfferRepository offerRepository, ModelMapper modelMapper) {
+    public OfferServiceImpl(OfferRepository offerRepository, ModelMapper modelMapper, TechnicalRepository technicalRepository, PublicationRepository publicationRepository, StateOfferRepository stateOfferRepository) {
         this.offerRepository = offerRepository;
         this.modelMapper = modelMapper;
+        this.technicalRepository = technicalRepository;
+        this.publicationRepository = publicationRepository;
+        this.stateOfferRepository = stateOfferRepository;
     }
 
     @Override
@@ -72,6 +84,9 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public ApiResponse<OfferResponseDTO> createOffer(OfferRequestDTO offerRequestDTO) {
         var offer = modelMapper.map(offerRequestDTO, Offer.class);
+        offer.setStateOffer(stateOfferRepository.getStateOfferById(offerRequestDTO.getStateOffer()));
+        offer.setTechnical(technicalRepository.getTechnicalById(offerRequestDTO.getTechnical()));
+        offer.setPublication(publicationRepository.getPublicationById(offerRequestDTO.getPublication()));
         offerRepository.save(offer);
 
         var response = modelMapper.map(offer, OfferResponseDTO.class);
@@ -85,6 +100,9 @@ public class OfferServiceImpl implements OfferService {
         if(offerOptional.isPresent()) {
             Offer offer = offerOptional.get();
             modelMapper.map(offerRequestDTO, offer);
+            offer.setStateOffer(stateOfferRepository.getStateOfferById(offerRequestDTO.getStateOffer()));
+            offer.setTechnical(technicalRepository.getTechnicalById(offerRequestDTO.getTechnical()));
+            offer.setPublication(publicationRepository.getPublicationById(offerRequestDTO.getPublication()));
             offerRepository.save(offer);
 
             OfferResponseDTO responseDTO = modelMapper.map(offer, OfferResponseDTO.class);
