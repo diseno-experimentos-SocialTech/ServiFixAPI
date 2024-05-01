@@ -49,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
         }else {
             Account account = accountOptional.get();
             modelMapper.map(accountRequestDTO, account);
+            account.setRole(roleRepository.getRoleById(accountRequestDTO.getRole()));
             accountRepository.save(account);
             AccountResponseDTO response = modelMapper.map(account, AccountResponseDTO.class);
             return new ApiResponse<>("Account updated successfully", Estatus.SUCCESS, response);
