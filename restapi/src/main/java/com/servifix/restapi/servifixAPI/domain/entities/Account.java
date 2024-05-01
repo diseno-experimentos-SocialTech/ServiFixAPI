@@ -33,7 +33,7 @@ public class Account {
     @Column( name = "email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "password", length = 50, nullable = false)
+    @Column(name = "password", length = 200, nullable = false)
     private String password;
 
     @Setter
