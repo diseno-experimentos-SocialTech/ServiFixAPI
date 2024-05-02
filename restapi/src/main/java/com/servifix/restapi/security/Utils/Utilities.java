@@ -19,11 +19,6 @@ public class Utilities {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    /**
-     * Obtiene el token del header Authorization
-     * @param request Solicitud http
-     * @return Token obtenido
-     */
     static public String getJwtTokenFromRequest(HttpServletRequest request) {
         //obtiene el token JWT desde el header
         String jwtTokenFromHeader = request.getHeader(AUTHORIZATION_HEADER);

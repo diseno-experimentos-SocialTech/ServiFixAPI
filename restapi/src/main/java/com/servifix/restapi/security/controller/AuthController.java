@@ -29,19 +29,14 @@ public class AuthController {
         this.service = service;
     }
 
-    @Operation(summary = "Inicia sesión")
+    @Operation(summary = "Log in to the system")
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenResponseDto>> login(@Valid @RequestBody LoginRequestDto request) {
         var res = service.login(request);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    /**
-     * Registra un nuevo usuario
-     * @param request Datos para el registro
-     * @return Usuario registrado
-     */
-    @Operation(summary = "Registra un nuevo usuario")
+    @Operation(summary = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisteredUserResponseDto>> registerUser(@Valid @RequestBody RegisterRequestDto request) {
         var res = service.registerUser(request);

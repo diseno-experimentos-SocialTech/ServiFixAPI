@@ -37,12 +37,6 @@ public class SecurityConfig {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Bean que se encarga de manejar la configuración de la seguridad
-     * @param http Objeto HttpSecurity
-     * @return Objeto SecurityFilterChain
-     * @throws Exception Excepción
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         //se obtiene el authentication manager builder y se le indica que use el custom user details service y el password encoder

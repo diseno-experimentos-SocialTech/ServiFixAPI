@@ -8,21 +8,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class BeansConfig {
-    /**
-     * Bean que se encarga de encriptar las contraseñas
-     * @return Instancia de BCryptPasswordEncoder
-     */
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Bean que se encarga de manejar la autenticación
-     * @param configuration Configuración de autenticación
-     * @return Instancia de AuthenticationManager
-     * @throws Exception Excepción de autenticación
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();

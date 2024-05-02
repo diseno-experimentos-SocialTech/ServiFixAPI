@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
         //mapea de la entidad al dto
         var responseData = modelMapper.map(newUser, RegisteredUserResponseDto.class);
 
-        return new ApiResponse<>("Correct Register", Estatus.SUCCESS, responseData);
+        return new ApiResponse<>("Register Success", Estatus.SUCCESS, responseData);
     }
 
     @Override
@@ -82,6 +82,6 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtTokenProvider.generateToken(authentication);
 
         var responseData = new TokenResponseDto(token);
-        return new ApiResponse<>("Autenticación correcta", Estatus.SUCCESS, responseData);
+        return new ApiResponse<>("Authentication Success", Estatus.SUCCESS, responseData);
     }
 }

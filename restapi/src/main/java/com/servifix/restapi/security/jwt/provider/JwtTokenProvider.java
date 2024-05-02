@@ -37,11 +37,6 @@ public class JwtTokenProvider {
                 .compact(); //construye el token
     }
 
-    /**
-     * Obtiene el ID del usuario a partir del token
-     * @param token Token a procesar
-     * @return ID del usuario
-     */
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(Utilities.getKey(secret)) //verifica la firma
@@ -52,11 +47,6 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    /**
-     * Valida el token
-     * @param token Token a validar
-     * @return True = token válido
-     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -66,13 +56,13 @@ public class JwtTokenProvider {
                     .getPayload();
             return true;
         } catch (MalformedJwtException ex) {
-            log.warn("Token inválido");
+            log.warn("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            log.warn("Token expirado");
+            log.warn("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            log.warn("Token no soportado");
+            log.warn("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            log.warn("Claims vacíos");
+            log.warn("JWT claims string is empty");
         }
 
         return false;

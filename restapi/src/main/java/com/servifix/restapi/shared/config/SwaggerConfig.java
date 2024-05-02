@@ -14,8 +14,8 @@ public class SwaggerConfig {
     public OpenAPI openApiConfig() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Products API")
-                        .description("API de productos con Spring Security")
+                        .title("Servifix API")
+                        .description("Servifix API with spring security")
                         .version("1.0.0")
                 )
                 .addSecurityItem(new SecurityRequirement()
@@ -26,7 +26,7 @@ public class SwaggerConfig {
                         .addSecuritySchemes("JwtScheme",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .description("Autorizar por un token JWT")
+                                        .description("Authorize by a JWT token")
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
                         )
