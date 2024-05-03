@@ -95,12 +95,19 @@ public class TechnicalServiceImpl implements TechnicalService {
     }
 
     private void validateTechnical(TechnicalRequestDTO technical) {
+        if (!isValidNumber(technical.getNumber())) {
+            throw new ValidationException("The number provided is not valid");
+        }
         if (isTechnicalNumberExists(technical.getNumber())) {
             throw new ValidationException("There is already a technician with the same technical number");
         }
         if (isPoliceRecordsExists(technical.getPoliceRecords())) {
             throw new ValidationException("There is already a technician with the same police records");
-        }/*
+        }
+        if (!isExistsAccount(technical.getAccount())) {
+            throw new ValidationException("The account provided does not exist");
+        }
+        /*
         if (!isValidateRole(technical.getAccount())) {
             throw new ValidationException("The role provided is not valid");
         }*/
@@ -113,6 +120,15 @@ public class TechnicalServiceImpl implements TechnicalService {
     private boolean isPoliceRecordsExists(String policeRecords) {
         return technicalRepository.existsByPoliceRecords(policeRecords);
     }
+
+    private boolean isValidNumber(String number) {
+        return number != null && number.length() == 9 && number.matches("\\d{9}");
+    }
+
+    private boolean isExistsAccount(int accountId) {
+        return technicalRepository.existsByAccount_Id(accountId);
+    }
+
     /*
     private boolean isValidateRole(int roleId) {
         return technicalRepository.searchByAccount_Role_Id(roleId) == 2;
