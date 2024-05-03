@@ -7,6 +7,7 @@ import com.servifix.restapi.servifixAPI.application.services.JobService;
 import com.servifix.restapi.servifixAPI.domain.entities.Job;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.JobRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -53,6 +54,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<JobResponseDTO> createJob(JobRequestDTO jobRequestDTO){
         var job = modelMapper.map(jobRequestDTO, Job.class);
+        validateJob(job);
         jobRepository.save(job);
 
         var response = modelMapper.map(job, JobResponseDTO.class);
@@ -69,6 +71,7 @@ public class JobServiceImpl implements JobService {
         }else {
             Job job = jobOptional.get();
             modelMapper.map(jobRequestDTO, job);
+            validateJob(job);
             jobRepository.save(job);
             JobResponseDTO response = modelMapper.map(job, JobResponseDTO.class);
             return new ApiResponse<>("Job updated successfully", Estatus.SUCCESS, response);
@@ -79,5 +82,15 @@ public class JobServiceImpl implements JobService {
     public ApiResponse<Void> deleteJob(int id){
         jobRepository.deleteById(id);
         return new ApiResponse<>("Job deleted successfully", Estatus.SUCCESS, null);
+    }
+
+    private void validateJob(Job job) {
+        if (existsJobByName(job.getName())) {
+            throw new ValidationException("There is already a Job with the same name");
+        }
+    }
+
+    private boolean existsJobByName(String name) {
+        return jobRepository.existsJobByName(name);
     }
 }

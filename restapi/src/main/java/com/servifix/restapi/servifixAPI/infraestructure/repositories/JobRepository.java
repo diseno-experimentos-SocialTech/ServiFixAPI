@@ -7,4 +7,6 @@ public interface JobRepository extends CrudRepository<Job, Integer> {
 
     Job getJobById(int id);
 
+    boolean existsJobByName(String name);
+
 }

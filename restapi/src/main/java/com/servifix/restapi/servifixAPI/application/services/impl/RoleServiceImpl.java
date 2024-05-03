@@ -77,12 +77,19 @@ public class RoleServiceImpl implements RoleService{
     }
 
     private void validateRole(Role role) {
-        if (roleRepository.existsByType(role.getType())) {
-            throw new RuntimeException("Ya existe un Role con el mismo nombre");
+        if (isRoleExists(role.getType())) {
+            throw new RuntimeException("A Role with the same name already exists");
         }
-        if (role.getType().equals("Admin") || role.getType().equals("Trabajador") || role.getType().equals("Usuario")) {
-            throw new RuntimeException("El nombre del Role no puede ser Admin, Trabajador o Usuario");
+        if (!isValidateRoleType(role.getType())) {
+            throw new RuntimeException("The Role name can only be Admin, Trabajador or Usuario");
         }
+    }
+
+    private boolean isRoleExists(String type) {
+        return roleRepository.existsByType(type);
+    }
+    private boolean isValidateRoleType(String type) {
+        return type.equals("Admin") || type.equals("Trabajador") || type.equals("Usuario");
     }
 
 

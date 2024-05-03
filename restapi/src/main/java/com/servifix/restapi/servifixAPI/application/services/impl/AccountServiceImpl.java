@@ -81,22 +81,22 @@ public class AccountServiceImpl implements AccountService {
 
     private void validateAccount(Account account) {
         if (!isValidateGender(account.getGender())) {
-            throw new ValidationException("El género que se proporciono no es válido");
+            throw new ValidationException("The gender provided is not valid");
         }
         if (!isValidateEmail(account.getEmail())) {
-            throw new ValidationException("El email que se proporciono no es válido");
+            throw new ValidationException("The email provided is not valid");
         }
         if (!isAdult(account.getBirthday())) {
-            throw new ValidationException("El usuario debe ser mayor de edad");
+            throw new ValidationException("The user must be at least 18 years old to register");
         }
         if (!isPasswordStrong(account.getPassword())) {
-            throw new ValidationException("La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula y un número");
+            throw new ValidationException("The password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and no spaces");
         }
         if (!isValidRole(account.getRole().getId())) {
-            throw new ValidationException("El rol que se proporciono no es válido");
+            throw new ValidationException("The role provided is not valid");
         }
         if (isEmailExists(account.getEmail())) {
-            throw new ValidationException("El email que se proporciono ya existe");
+            throw new ValidationException("The email provided is already registered");
         }
     }
 

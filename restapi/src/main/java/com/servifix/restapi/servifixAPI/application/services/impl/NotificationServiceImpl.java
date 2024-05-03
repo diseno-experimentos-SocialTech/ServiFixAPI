@@ -63,10 +63,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void validateNotification(Notification notification) {
         if (existsNotificationByTitleByContentByAccount(notification.getTitle(), notification.getContent(), notification.getAccount().getId())) {
-            throw new ValidationException("Ya existe una notificación con el mismo título y contenido");
+            throw new ValidationException("A notification with the same title and content already exists for this account");
         }
         if (!isValidateDate(notification.getDate())) {
-            throw new ValidationException("La fecha de la notificación no puede ser anterior a la fecha actual");
+            throw new ValidationException("The date must be greater than the current date");
         }
     }
 
