@@ -122,4 +122,12 @@ public class OfferServiceImpl implements OfferService {
             return new ApiResponse<>("Offer not found", Estatus.ERROR, null);
         }
     }
+
+    private void ValidateOffer(OfferRequestDTO offerRequestDTO) {
+
+    }
+    private void ValidateUpdateOffer(int id, OfferRequestDTO offerRequestDTO) {
+
+    }
+    
 }
