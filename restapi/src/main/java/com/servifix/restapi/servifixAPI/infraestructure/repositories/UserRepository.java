@@ -9,4 +9,11 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     User getUserById(int id);
 
+    boolean existsByNumber(String number);
+
+    boolean existsByAccount_Id(int account_id);
+
+    boolean existsByAccount_IdAndIdNot(int account_id, int id);
+
+    boolean existsByNumberAndIdNot(String number, int id);
 }

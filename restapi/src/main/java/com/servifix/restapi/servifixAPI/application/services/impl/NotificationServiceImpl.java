@@ -62,7 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private void validateNotification(NotificationRequestDTO notification) {
-        if (existsNotificationByTitleByContentByAccount(notification.getTitle(), notification.getContent(), notification.getAccount())) {
+        if (isExistsNotificationByTitleByContentByAccount(notification.getTitle(), notification.getContent(), notification.getAccount())) {
             throw new ValidationException("A notification with the same title and content already exists for this account");
         }
         if (!isValidateDate(notification.getDate())) {
@@ -74,7 +74,7 @@ public class NotificationServiceImpl implements NotificationService {
         return date.equals(LocalDate.now());
     }
 
-    private boolean existsNotificationByTitleByContentByAccount(String title, String content, int account_id) {
+    private boolean isExistsNotificationByTitleByContentByAccount(String title, String content, int account_id) {
         return notificationRepository.existsByTitleAndContentAndAccount_Id(title, content, account_id);
     }
 

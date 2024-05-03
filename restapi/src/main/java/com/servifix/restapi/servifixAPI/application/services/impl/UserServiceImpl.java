@@ -8,6 +8,7 @@ import com.servifix.restapi.servifixAPI.application.services.UserService;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.UserRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<UserResponseDTO> createUser(UserRequestDTO userRequestDTO){
         var user = modelMapper.map(userRequestDTO, User.class);
+        validateUser(userRequestDTO);
         user.setAccount(accountRepository.getAccountById(userRequestDTO.getAccount()));
         userRepository.save(user);
 
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
         }else {
             User user = userOptional.get();
             modelMapper.map(userRequestDTO, user);
+            validateUpdateUser(id, userRequestDTO);
             user.setAccount(accountRepository.getAccountById(userRequestDTO.getAccount()));
             userRepository.save(user);
             UserResponseDTO response = modelMapper.map(user, UserResponseDTO.class);
@@ -90,5 +93,52 @@ public class UserServiceImpl implements UserService {
             return new ApiResponse<>("User deleted successfully", Estatus.SUCCESS, null);
         }
     }
+
+    private void validateUser(UserRequestDTO user) {
+       if (isUserNumberExists(user.getNumber())) {
+           throw new ValidationException("A user with the same number already exists");
+       }
+       if (!isValidNumber(user.getNumber())) {
+           throw new ValidationException("The number provided is not valid");
+       }
+       if (isExistsAccount(user.getAccount())) {
+           throw new ValidationException("The account provided does not exist");
+       }
+    }
+
+    private void validateUpdateUser(int id, UserRequestDTO user) {
+        if (isUserNumberExistsById(user.getNumber(), id)) {
+            throw new ValidationException("A user with the same number already exists");
+        }
+        if (!isValidNumber(user.getNumber())) {
+            throw new ValidationException("The number provided is not valid");
+        }
+        if (isExistsAccountById(user.getAccount(), id)) {
+            throw new ValidationException("The account provided does not exist");
+        }
+
+    }
+    //create
+    private boolean isUserNumberExists(String number) {
+        return userRepository.existsByNumber(number);
+    }
+
+    private boolean isValidNumber(String number) {
+        return number != null && number.length() == 9 && number.matches("\\d{9}");
+    }
+
+    private boolean isExistsAccount(int account_id) {
+        return userRepository.existsByAccount_Id(account_id);
+    }
+
+    //update
+    private boolean isExistsAccountById(int account_id, int id) {
+        return userRepository.existsByAccount_IdAndIdNot(account_id, id);
+    }
+    private boolean isUserNumberExistsById(String number, int id) {
+        return userRepository.existsByNumberAndIdNot(number, id);
+    }
+
+
 
 }

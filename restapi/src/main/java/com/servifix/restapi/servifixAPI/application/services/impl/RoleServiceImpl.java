@@ -33,7 +33,7 @@ public class RoleServiceImpl implements RoleService{
     public ApiResponse<RoleResponseDTO> createRole(RoleRequestDTO roleRequestDTO) {
 
         var role = modelMapper.map(roleRequestDTO, Role.class);
-        validateRole(role);
+        validateRole(roleRequestDTO);
         roleRepository.save(role);
 
         var response = modelMapper.map(role, RoleResponseDTO.class);
@@ -51,7 +51,7 @@ public class RoleServiceImpl implements RoleService{
         }else {
             Role role = roleOptional.get();
             modelMapper.map(roleRequestDTO, role);
-            validateRole(role);
+            validateUpdateRole(id, roleRequestDTO);
             roleRepository.save(role);
             RoleResponseDTO response = modelMapper.map(role, RoleResponseDTO.class);
             return new ApiResponse<>("Role updated successfully", Estatus.SUCCESS, response);
@@ -76,7 +76,7 @@ public class RoleServiceImpl implements RoleService{
         return roleRepository.existsById(id);
     }
 
-    private void validateRole(Role role) {
+    private void validateRole(RoleRequestDTO role) {
         if (isRoleExists(role.getType())) {
             throw new RuntimeException("A Role with the same name already exists");
         }
@@ -85,8 +85,21 @@ public class RoleServiceImpl implements RoleService{
         }
     }
 
+    private void validateUpdateRole(int id, RoleRequestDTO role) {
+        if (isRoleExistsById(role.getType(), id)){
+            throw new RuntimeException("Role not found");
+        }
+        if (!isValidateRoleType(role.getType())) {
+            throw new RuntimeException("The Role name can only be Admin, Tecnicos or Usuario");
+        }
+    }
+
     private boolean isRoleExists(String type) {
         return roleRepository.existsByType(type);
+    }
+
+    private boolean isRoleExistsById(String type, int id) {
+        return roleRepository.existsByTypeAndIdNot(type, id);
     }
     private boolean isValidateRoleType(String type) {
         return type.equals("Admin") || type.equals("Tecnicos") || type.equals("Usuario");

@@ -1,6 +1,7 @@
 package com.servifix.restapi.servifixAPI.application.services.impl;
 
 import com.servifix.restapi.servifixAPI.application.dto.request.TechnicalRequestDTO;
+import com.servifix.restapi.servifixAPI.application.dto.request.UserRequestDTO;
 import com.servifix.restapi.servifixAPI.application.dto.response.TechnicalResponseDTO;
 import com.servifix.restapi.servifixAPI.application.dto.response.UserResponseDTO;
 import com.servifix.restapi.servifixAPI.application.services.TechnicalService;
@@ -73,8 +74,8 @@ public class TechnicalServiceImpl implements TechnicalService {
             return new ApiResponse<>("Technical not found", Estatus.ERROR, null);
         } else {
             Technical technical = technicalOptional.get();
-            validateTechnical(technicalRequestDTO);
             modelMapper.map(technicalRequestDTO, technical);
+            validateUpdateTechnical(id, technicalRequestDTO);
             technical.setAccount(accountRepository.getAccountById(technicalRequestDTO.getAccount()));
             technicalRepository.save(technical);
             TechnicalResponseDTO response = modelMapper.map(technical, TechnicalResponseDTO.class);
@@ -104,7 +105,7 @@ public class TechnicalServiceImpl implements TechnicalService {
         if (isPoliceRecordsExists(technical.getPoliceRecords())) {
             throw new ValidationException("There is already a technician with the same police records");
         }
-        if (!isExistsAccount(technical.getAccount())) {
+        if (isExistsAccount(technical.getAccount())) {
             throw new ValidationException("The account provided does not exist");
         }
         /*
@@ -113,6 +114,22 @@ public class TechnicalServiceImpl implements TechnicalService {
         }*/
     }
 
+    private void validateUpdateTechnical(int id, TechnicalRequestDTO technical) {
+        if (!isValidNumber(technical.getNumber())) {
+            throw new ValidationException("The number provided is not valid");
+        }
+        if (isTechnicalNumberExistsById(technical.getNumber(), id)) {
+            throw new ValidationException("There is already a technician with the same technical number");
+        }
+        if (isPoliceRecordsExistsById(technical.getPoliceRecords(),id)) {
+            throw new ValidationException("There is already a technician with the same police records");
+        }
+        if (isExistsAccountById(technical.getAccount(), id)) {
+            throw new ValidationException("The account provided does not exist");
+        }
+    }
+
+    //create
     private boolean isTechnicalNumberExists(String number) {
         return technicalRepository.existsByNumber(number);
     }
@@ -122,16 +139,32 @@ public class TechnicalServiceImpl implements TechnicalService {
     }
 
     private boolean isValidNumber(String number) {
-        return number != null && number.length() == 9 && number.matches("\\d{9}");
+        return number != null && number.matches("9\\d{8}");
     }
 
-    private boolean isExistsAccount(int accountId) {
-        return technicalRepository.existsByAccount_Id(accountId);
+    private boolean isExistsAccount(int account_id) {
+        return technicalRepository.existsByAccount_Id(account_id);
     }
+
+
+    //update
+    private boolean isTechnicalNumberExistsById(String number, int id) {
+        return technicalRepository.existsByNumberAndIdNot(number, id);
+    }
+
+    private boolean isPoliceRecordsExistsById(String policeRecords,int id) {
+        return technicalRepository.existsByPoliceRecordsAndIdNot(policeRecords, id);
+    }
+    private boolean isExistsAccountById(int account_id, int id) {
+        return technicalRepository.existsByAccount_IdAndIdNot(account_id, id);
+    }
+
 
     /*
     private boolean isValidateRole(int roleId) {
         return technicalRepository.searchByAccount_Role_Id(roleId) == 2;
     }*/
+
+
 
 }

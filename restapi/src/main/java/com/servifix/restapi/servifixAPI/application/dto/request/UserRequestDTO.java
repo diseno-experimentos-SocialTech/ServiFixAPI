@@ -24,7 +24,7 @@ public class UserRequestDTO {
     private String image;
 
     @NotBlank(message = "number is mandatory")
-    private int number;
+    private String number;
 
     @NotBlank(message = "accountId is mandatory")
     private int account;

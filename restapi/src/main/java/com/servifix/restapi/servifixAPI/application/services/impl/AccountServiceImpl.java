@@ -33,7 +33,7 @@ public class AccountServiceImpl implements AccountService {
     public ApiResponse<AccountResponseDTO> createAccount(AccountRequestDTO accountRequestDTO) {
 
         var account = modelMapper.map(accountRequestDTO, Account.class);
-        validateAccount(account);
+        validateAccount(accountRequestDTO);
         account.setRole(roleRepository.getRoleById(accountRequestDTO.getRole()));
         accountRepository.save(account);
 
@@ -52,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
         }else {
             Account account = accountOptional.get();
             modelMapper.map(accountRequestDTO, account);
-            validateAccount(account);
+            validateUpdateAccount(id, accountRequestDTO);
             account.setRole(roleRepository.getRoleById(accountRequestDTO.getRole()));
             accountRepository.save(account);
             AccountResponseDTO response = modelMapper.map(account, AccountResponseDTO.class);
@@ -79,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    private void validateAccount(Account account) {
+    private void validateAccount(AccountRequestDTO account) {
         if (!isValidateGender(account.getGender())) {
             throw new ValidationException("The gender provided is not valid");
         }
@@ -92,12 +92,34 @@ public class AccountServiceImpl implements AccountService {
         if (!isPasswordStrong(account.getPassword())) {
             throw new ValidationException("The password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and no spaces");
         }
-        if (!isValidRole(account.getRole().getId())) {
+        if (!isValidRole(account.getRole())) {
             throw new ValidationException("The role provided is not valid");
         }
         if (isEmailExists(account.getEmail())) {
             throw new ValidationException("The email provided is already registered");
         }
+    }
+
+    private void validateUpdateAccount(int id, AccountRequestDTO account) {
+        if (!isValidateGender(account.getGender())) {
+            throw new ValidationException("The gender provided is not valid");
+        }
+        if (!isValidateEmail(account.getEmail())) {
+            throw new ValidationException("The email provided is not valid");
+        }
+        if (!isAdult(account.getBirthday())) {
+            throw new ValidationException("The user must be at least 18 years old to register");
+        }
+        if (!isPasswordStrong(account.getPassword())) {
+            throw new ValidationException("The password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and no spaces");
+        }
+        if (!isValidRole(account.getRole())) {
+            throw new ValidationException("The role provided is not valid");
+        }
+        if (isEmailExistsById(account.getEmail(), id)) {
+            throw new ValidationException("The email provided is already registered");
+        }
+
     }
 
 
@@ -129,6 +151,10 @@ public class AccountServiceImpl implements AccountService {
 
     private boolean isEmailExists(String email) {
         return accountRepository.existsByEmail(email);
+    }
+
+    private boolean isEmailExistsById(String email, int id) {
+        return accountRepository.existsByEmailAndIdNot(email, id);
     }
 
 }

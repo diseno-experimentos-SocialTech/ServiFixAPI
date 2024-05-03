@@ -9,4 +9,5 @@ public interface JobRepository extends CrudRepository<Job, Integer> {
 
     boolean existsJobByName(String name);
 
+    boolean existsJobByNameAndIdNot(String name, int id);
 }

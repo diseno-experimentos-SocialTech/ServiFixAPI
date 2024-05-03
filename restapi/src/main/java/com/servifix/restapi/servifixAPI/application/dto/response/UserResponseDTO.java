@@ -21,7 +21,7 @@ public class UserResponseDTO {
 
     private String image;
 
-    private int number;
+    private String number;
 
     private Account account;
 

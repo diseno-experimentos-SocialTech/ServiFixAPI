@@ -71,7 +71,7 @@ public class JobServiceImpl implements JobService {
         }else {
             Job job = jobOptional.get();
             modelMapper.map(jobRequestDTO, job);
-            validateJob(job);
+            validateUpdateJob(id, jobRequestDTO);
             jobRepository.save(job);
             JobResponseDTO response = modelMapper.map(job, JobResponseDTO.class);
             return new ApiResponse<>("Job updated successfully", Estatus.SUCCESS, response);
@@ -89,8 +89,16 @@ public class JobServiceImpl implements JobService {
             throw new ValidationException("There is already a Job with the same name");
         }
     }
+    private void validateUpdateJob(int id, JobRequestDTO jobRequestDTO) {
+       if (existsJobByNameAndIdNot(jobRequestDTO.getName(), id)) {
+            throw new ValidationException("There is already a Job with the same name");
+        }
+    }
 
     private boolean existsJobByName(String name) {
         return jobRepository.existsJobByName(name);
+    }
+    private boolean existsJobByNameAndIdNot(String name, int id) {
+        return jobRepository.existsJobByNameAndIdNot(name, id);
     }
 }

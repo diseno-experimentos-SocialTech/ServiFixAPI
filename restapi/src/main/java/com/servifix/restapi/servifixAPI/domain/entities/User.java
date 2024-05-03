@@ -26,7 +26,7 @@ public class User {
     private String image;
 
     @Column(name = "number", length = 9, nullable = false)
-    private int number;
+    private String number;
 
     @Setter
     @OneToOne(fetch = FetchType.LAZY)

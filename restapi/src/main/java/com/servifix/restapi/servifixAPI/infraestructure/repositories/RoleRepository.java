@@ -11,4 +11,5 @@ public interface RoleRepository extends CrudRepository<Role, Integer> {
 
     boolean existsByType(String type);
 
+    boolean existsByTypeAndIdNot(String type, int id);
 }

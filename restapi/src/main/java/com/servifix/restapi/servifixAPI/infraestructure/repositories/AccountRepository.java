@@ -15,4 +15,5 @@ public interface AccountRepository extends CrudRepository<Account, Integer> {
     boolean existsByEmail(String email);
 
 
+    boolean existsByEmailAndIdNot(String email, int id);
 }
