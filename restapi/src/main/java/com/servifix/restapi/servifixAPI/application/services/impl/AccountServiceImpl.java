@@ -95,11 +95,14 @@ public class AccountServiceImpl implements AccountService {
         if (!isValidRole(account.getRole().getId())) {
             throw new ValidationException("El rol que se proporciono no es válido");
         }
+        if (isEmailExists(account.getEmail())) {
+            throw new ValidationException("El email que se proporciono ya existe");
+        }
     }
 
 
     private boolean isValidateGender(String gender) {
-        return gender.equals("Femenino") || gender.equals("Masculino") || gender.equals("Otro") || gender.equals("Prefiero no decirlo")
+        return gender.equals("Femenino") || gender.equals("Masculino") || gender.equals("Otro") || gender.equals("Prefiero no decirlo");
     }
     /*
     private  boolean isValidateEmail(String email) {
@@ -122,6 +125,10 @@ public class AccountServiceImpl implements AccountService {
     }
     private boolean isValidRole(int roleId) {
         return roleId == 1 || roleId == 2;
+    }
+
+    private boolean isEmailExists(String email) {
+        return accountRepository.existsByEmail(email);
     }
 
 }

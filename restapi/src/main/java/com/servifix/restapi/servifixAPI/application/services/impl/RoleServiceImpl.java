@@ -33,6 +33,7 @@ public class RoleServiceImpl implements RoleService{
     public ApiResponse<RoleResponseDTO> createRole(RoleRequestDTO roleRequestDTO) {
 
         var role = modelMapper.map(roleRequestDTO, Role.class);
+        validateRole(role);
         roleRepository.save(role);
 
         var response = modelMapper.map(role, RoleResponseDTO.class);
@@ -50,6 +51,7 @@ public class RoleServiceImpl implements RoleService{
         }else {
             Role role = roleOptional.get();
             modelMapper.map(roleRequestDTO, role);
+            validateRole(role);
             roleRepository.save(role);
             RoleResponseDTO response = modelMapper.map(role, RoleResponseDTO.class);
             return new ApiResponse<>("Role updated successfully", Estatus.SUCCESS, response);
@@ -73,4 +75,15 @@ public class RoleServiceImpl implements RoleService{
     public boolean existRole(int id) {
         return roleRepository.existsById(id);
     }
+
+    private void validateRole(Role role) {
+        if (roleRepository.existsByType(role.getType())) {
+            throw new RuntimeException("Ya existe un Role con el mismo nombre");
+        }
+        if (role.getType().equals("Admin") || role.getType().equals("Trabajador") || role.getType().equals("Usuario")) {
+            throw new RuntimeException("El nombre del Role no puede ser Admin, Trabajador o Usuario");
+        }
+    }
+
+
 }
