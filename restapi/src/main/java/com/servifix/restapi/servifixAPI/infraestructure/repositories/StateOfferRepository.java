@@ -7,4 +7,5 @@ public interface StateOfferRepository extends CrudRepository<StateOffer, Integer
 
     StateOffer getStateOfferById(int id);
 
+    boolean existsByState(String state);
 }

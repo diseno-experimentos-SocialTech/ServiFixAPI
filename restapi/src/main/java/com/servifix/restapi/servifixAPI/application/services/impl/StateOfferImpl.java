@@ -7,6 +7,7 @@ import com.servifix.restapi.servifixAPI.application.services.StateOfferService;
 import com.servifix.restapi.servifixAPI.domain.entities.StateOffer;
 import com.servifix.restapi.servifixAPI.domain.entities.Technical;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.StateOfferRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -43,9 +44,16 @@ public class StateOfferImpl implements StateOfferService {
     @Override
     public ApiResponse<StateOfferResponseDTO> createStateOffer(StateOfferRequestDTO stateOfferRequestDTO) {
         var stateOffer = modelMapper.map(stateOfferRequestDTO, StateOffer.class);
+        validateStateOffer(stateOfferRequestDTO);
         stateOfferRepository.save(stateOffer);
         var response = modelMapper.map(stateOffer, StateOfferResponseDTO.class);
         return new ApiResponse<>("StateOffer created successfully", Estatus.SUCCESS, response);
+    }
+
+    private void validateStateOffer(StateOfferRequestDTO stateOffer) {
+        if (stateOfferRepository.existsByState(stateOffer.getState())) {
+            throw new ValidationException("That state already exists");
+        }
     }
 
 }
