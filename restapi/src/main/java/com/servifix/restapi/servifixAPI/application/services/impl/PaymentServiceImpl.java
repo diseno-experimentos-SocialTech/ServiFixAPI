@@ -8,6 +8,7 @@ import com.servifix.restapi.servifixAPI.domain.entities.Payment;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.OfferRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.PaymentRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.hibernate.sql.ast.tree.expression.Over;
@@ -45,6 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ApiResponse<PaymentResponseDTO> createPayment(PaymentRequestDTO paymentRequestDTO) {
         var payment = modelMapper.map(paymentRequestDTO, Payment.class);
+        validatePayment(paymentRequestDTO);
         payment.setOffer(offerRepository.getOfferById(paymentRequestDTO.getOffer()));
         paymentRepository.save(payment);
 
@@ -63,5 +65,15 @@ public class PaymentServiceImpl implements PaymentService {
         } else {
             return new ApiResponse<>("Payment not found", Estatus.ERROR, null);
         }
+    }
+
+    private void validatePayment(PaymentRequestDTO payment) {
+        if (!isValidateAmount(payment.getAmount())) {
+            throw new ValidationException("El monto debe ser mayor a 0");
+        }
+    }
+
+    private boolean isValidateAmount(double amount) {
+        return amount > 0;
     }
 }
