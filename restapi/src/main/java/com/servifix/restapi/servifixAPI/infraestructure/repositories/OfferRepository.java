@@ -15,4 +15,7 @@ public interface OfferRepository extends CrudRepository<Offer, Integer> {
 
     List<Offer> getOfferByPublicationIdAndStateOfferId(int publicationId, int stateId);
 
+    boolean existsByTechnical_IdAndPublication_Id (int technicalId, int publicationId);
+
+    boolean existsByTechnical_IdAndPublication_IdAndIdNot(int technicalId, int publicationId, int id);
 }

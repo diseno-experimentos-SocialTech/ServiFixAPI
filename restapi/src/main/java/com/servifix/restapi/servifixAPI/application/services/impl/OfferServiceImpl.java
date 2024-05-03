@@ -10,6 +10,7 @@ import com.servifix.restapi.servifixAPI.infraestructure.repositories.OfferReposi
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.PublicationRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.StateOfferRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.TechnicalRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -84,6 +85,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public ApiResponse<OfferResponseDTO> createOffer(OfferRequestDTO offerRequestDTO) {
         var offer = modelMapper.map(offerRequestDTO, Offer.class);
+        ValidateOffer(offerRequestDTO);
         offer.setStateOffer(stateOfferRepository.getStateOfferById(offerRequestDTO.getStateOffer()));
         offer.setTechnical(technicalRepository.getTechnicalById(offerRequestDTO.getTechnical()));
         offer.setPublication(publicationRepository.getPublicationById(offerRequestDTO.getPublication()));
@@ -100,6 +102,7 @@ public class OfferServiceImpl implements OfferService {
         if(offerOptional.isPresent()) {
             Offer offer = offerOptional.get();
             modelMapper.map(offerRequestDTO, offer);
+            ValidateUpdateOffer(id, offerRequestDTO);
             offer.setStateOffer(stateOfferRepository.getStateOfferById(offerRequestDTO.getStateOffer()));
             offer.setTechnical(technicalRepository.getTechnicalById(offerRequestDTO.getTechnical()));
             offer.setPublication(publicationRepository.getPublicationById(offerRequestDTO.getPublication()));
@@ -124,10 +127,31 @@ public class OfferServiceImpl implements OfferService {
     }
 
     private void ValidateOffer(OfferRequestDTO offerRequestDTO) {
+        if(isExistsOfferByTechnicalByPublication(offerRequestDTO.getTechnical(), offerRequestDTO.getPublication())) {
+            throw new ValidationException("There is already an offer with the same technician and publication");
+        }
+        if(!isValidateAmount(offerRequestDTO.getAmount())) {
+            throw new ValidationException("The amount must be greater than 0");
+        }
 
     }
     private void ValidateUpdateOffer(int id, OfferRequestDTO offerRequestDTO) {
-
+        if(isExistsOfferByTechnicalByPublicationById(offerRequestDTO.getTechnical(), offerRequestDTO.getPublication(), id)) {
+            throw new ValidationException("There is already an offer with the same technician and publication");
+        }
+        if(!isValidateAmount(offerRequestDTO.getAmount())) {
+            throw new ValidationException("The amount must be greater than 0");
+        }
     }
-    
+
+    private boolean isExistsOfferByTechnicalByPublication(int technicalId, int publicationId) {
+        return offerRepository.existsByTechnical_IdAndPublication_Id(technicalId, publicationId);
+    }
+    private boolean isExistsOfferByTechnicalByPublicationById(int technicalId, int publicationId, int id) {
+        return offerRepository.existsByTechnical_IdAndPublication_IdAndIdNot(technicalId, publicationId, id);
+    }
+    private boolean isValidateAmount(double amount) {
+        return amount > 0;
+    }
+
 }
