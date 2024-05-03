@@ -7,4 +7,7 @@ public interface TechnicalRepository extends CrudRepository<Technical, Integer> 
 
     Technical getTechnicalById(int id);
 
+    boolean existsByNumber(String number);
+
+    boolean existsByPoliceRecords(String policeRecords);
 }

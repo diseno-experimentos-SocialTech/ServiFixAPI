@@ -8,6 +8,7 @@ import com.servifix.restapi.servifixAPI.domain.entities.Technical;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.TechnicalRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -55,6 +56,7 @@ public class TechnicalServiceImpl implements TechnicalService {
     @Override
     public ApiResponse<TechnicalResponseDTO> createTechnical(TechnicalRequestDTO technicalRequestDTO) {
         var technical = modelMapper.map(technicalRequestDTO, Technical.class);
+        validateTechnical(technical);
         technical.setAccount(accountRepository.getAccountById(technicalRequestDTO.getAccount()));
         technicalRepository.save(technical);
 
@@ -71,6 +73,7 @@ public class TechnicalServiceImpl implements TechnicalService {
             return new ApiResponse<>("Technical not found", Estatus.ERROR, null);
         } else {
             Technical technical = technicalOptional.get();
+            validateTechnical(technical);
             modelMapper.map(technicalRequestDTO, technical);
             technical.setAccount(accountRepository.getAccountById(technicalRequestDTO.getAccount()));
             technicalRepository.save(technical);
@@ -90,4 +93,24 @@ public class TechnicalServiceImpl implements TechnicalService {
             return new ApiResponse<>("Technical deleted successfully", Estatus.SUCCESS, null);
         }
     }
+
+    private void validateTechnical(Technical technical) {
+        if (isTechnicalNumberExists(technical.getNumber())) {
+            throw new ValidationException("There is already a technician with the same technical number");
+        }
+        if (isPoliceRecordsExists(technical.getPoliceRecords())) {
+            throw new ValidationException("There is already a technician with the same police records");
+        }
+
+
+    }
+
+    private boolean isTechnicalNumberExists(String number) {
+        return technicalRepository.existsByNumber(number);
+    }
+
+    private boolean isPoliceRecordsExists(String policeRecords) {
+        return technicalRepository.existsByPoliceRecords(policeRecords);
+    }
+
 }
