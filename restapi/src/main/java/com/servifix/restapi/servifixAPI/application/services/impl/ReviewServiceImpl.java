@@ -8,6 +8,7 @@ import com.servifix.restapi.servifixAPI.application.services.ReviewService;
 import com.servifix.restapi.servifixAPI.domain.entities.*;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.ReviewRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.TechnicalRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -53,6 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ApiResponse<ReviewResponseDTO> createReview(ReviewRequestDTO reviewRequestDTO) {
         var review = modelMapper.map(reviewRequestDTO, Review.class);
+        validateReview(reviewRequestDTO);
         review.setTechnical(technicalRepository.getTechnicalById(reviewRequestDTO.getTechnical()));
         reviewRepository.save(review);
         var response = modelMapper.map(review, ReviewResponseDTO.class);
@@ -67,6 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
         } else {
             Review review = reviewOptional.get();
             modelMapper.map(reviewRequestDTO, review);
+            validateReview(reviewRequestDTO);
             reviewRepository.save(review);
             ReviewResponseDTO response = modelMapper.map(review, ReviewResponseDTO.class);
             return new ApiResponse<>("Review updated successfully", Estatus.SUCCESS, response);
@@ -82,6 +85,15 @@ public class ReviewServiceImpl implements ReviewService {
             reviewRepository.deleteById(id);
             return new ApiResponse<>("Review deleted successfully", Estatus.SUCCESS, null);
         }
+    }
+
+    private void validateReview(ReviewRequestDTO review) {
+        if (!isValidateAverage(review.getAverage())) {
+            throw new ValidationException("The average must be between 0 and 5");
+        }
+    }
+    private boolean isValidateAverage(float average) {
+        return average >= 0 && average <= 5;
     }
 
 }

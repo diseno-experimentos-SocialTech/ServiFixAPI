@@ -44,6 +44,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ApiResponse<ReportResponseDTO> createReport(ReportRequestDTO reportRequestDTO) {
         var report = modelMapper.map(reportRequestDTO, Report.class);
+        ValidateReport(reportRequestDTO);
         report.setOffer(offerRepository.getOfferById(reportRequestDTO.getOffer()));
         reportRepository.save(report);
 
@@ -58,6 +59,8 @@ public class ReportServiceImpl implements ReportService {
 
         if (reportOptional.isPresent()) {
             Report report = reportOptional.get();
+            modelMapper.map(reportRequestDTO, report);
+            ValidateReport(reportRequestDTO);
             report.setOffer(offerRepository.getOfferById(reportRequestDTO.getOffer()));
             reportRepository.save(report);
 
