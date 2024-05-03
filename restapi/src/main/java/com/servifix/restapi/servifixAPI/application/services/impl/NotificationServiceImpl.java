@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public ApiResponse<NotificationResponseDTO> createNotification(NotificationRequestDTO notificationRequestDTO){
         var notification = modelMapper.map(notificationRequestDTO, Notification.class);
-        validateNotification(notification);
+        validateNotification(notificationRequestDTO);
         notification.setAccount(accountRepository.getAccountById(notificationRequestDTO.getAccount()));
         notificationRepository.save(notification);
 
@@ -61,21 +61,21 @@ public class NotificationServiceImpl implements NotificationService {
         return new ApiResponse<>("Notification deleted successfully", Estatus.SUCCESS, null);
     }
 
-    private void validateNotification(Notification notification) {
-        /*if (existsNotificationByTitleByContentByAccount(notification.getTitle(), notification.getContent(), notification.getAccount().getId())) {
+    private void validateNotification(NotificationRequestDTO notification) {
+        if (existsNotificationByTitleByContentByAccount(notification.getTitle(), notification.getContent(), notification.getAccount())) {
             throw new ValidationException("A notification with the same title and content already exists for this account");
         }
         if (!isValidateDate(notification.getDate())) {
-            throw new ValidationException("The date must be greater than the current date");
-        }*/
+            throw new ValidationException("The date must be the current date");
+        }
     }
 
     private boolean isValidateDate(LocalDate date) {
-        return date.isAfter(LocalDate.now());
+        return date.equals(LocalDate.now());
     }
 
     private boolean existsNotificationByTitleByContentByAccount(String title, String content, int account_id) {
-        return notificationRepository.existsByTitleAndContent(title, content) && notificationRepository.existsByAccount_Id(account_id);
+        return notificationRepository.existsByTitleAndContentAndAccount_Id(title, content, account_id);
     }
 
 

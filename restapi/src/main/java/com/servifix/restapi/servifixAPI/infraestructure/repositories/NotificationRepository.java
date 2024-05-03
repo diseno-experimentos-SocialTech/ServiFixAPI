@@ -8,8 +8,8 @@ import org.springframework.data.repository.CrudRepository;
 public interface NotificationRepository extends CrudRepository<Notification, Integer> {
 
 
-    boolean existsByTitleAndContent(String title, String content);
+    boolean existsByTitleAndContentAndAccount_Id(String title, String content, int account_id);
 
-    boolean existsByAccount_Id(int accountId);
+
 
 }
