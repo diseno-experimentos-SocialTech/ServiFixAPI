@@ -6,11 +6,13 @@ import com.servifix.restapi.servifixAPI.application.services.ReportService;
 import com.servifix.restapi.servifixAPI.domain.entities.Report;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.OfferRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.ReportRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -77,5 +79,14 @@ public class ReportServiceImpl implements ReportService {
         } else {
             return new ApiResponse<>("Report not found", Estatus.ERROR, null);
         }
+    }
+
+    private void ValidateReport(ReportRequestDTO report) {
+        if (!isValidateDate(report.getDate())) {
+            throw new ValidationException("The date must be the current date");
+        }
+    }
+    private boolean isValidateDate(LocalDate date) {
+        return date.equals(LocalDate.now());
     }
 }
