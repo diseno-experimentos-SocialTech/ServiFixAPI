@@ -7,6 +7,7 @@ import com.servifix.restapi.servifixAPI.domain.entities.Qualification;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.OfferRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.QualificationRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.ReviewRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -64,6 +65,7 @@ public class QualificationServiceImpl implements QualificationService {
     @Override
     public ApiResponse<QualificationResponseDTO> createQualification(QualificationRequestDTO qualificationRequestDTO) {
         var qualification = modelMapper.map(qualificationRequestDTO, Qualification.class);
+        validateQualification(qualificationRequestDTO);
         qualification.setReview(reviewRepository.getReviewById(qualificationRequestDTO.getReview()));
         qualification.setOffer(offerRepository.getOfferById(qualificationRequestDTO.getOffer()));
         qualificationRepository.save(qualification);
@@ -77,6 +79,8 @@ public class QualificationServiceImpl implements QualificationService {
 
         if (qualificationOptional.isPresent()) {
             Qualification qualification = qualificationOptional.get();
+            modelMapper.map(qualificationRequestDTO, qualification);
+            validateQualification(qualificationRequestDTO);
             qualification.setReview(reviewRepository.getReviewById(qualificationRequestDTO.getReview()));
             qualification.setOffer(offerRepository.getOfferById(qualificationRequestDTO.getOffer()));
             qualificationRepository.save(qualification);
@@ -97,6 +101,23 @@ public class QualificationServiceImpl implements QualificationService {
         } else {
             return new ApiResponse<>("Qualification not found", Estatus.ERROR, null);
         }
+    }
+
+    private void validateQualification(QualificationRequestDTO qualification) {
+        if (!isValidateQuality(qualification.getQuality())) {
+            throw new ValidationException("The quality must be between 0 and 5");
+        }
+        if (!isValidateRelevance(qualification.getRelevance())) {
+            throw new ValidationException("The relevance must be between 0 and 5");
+        }
+    }
+
+
+    private boolean isValidateQuality(float quality) {
+        return quality >= 0 && quality <= 5;
+    }
+    private boolean isValidateRelevance(float relevance) {
+        return relevance >= 0 && relevance <= 5;
     }
 
 }
