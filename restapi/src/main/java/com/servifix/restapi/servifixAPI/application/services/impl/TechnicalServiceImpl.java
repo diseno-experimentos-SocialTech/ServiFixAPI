@@ -56,7 +56,7 @@ public class TechnicalServiceImpl implements TechnicalService {
     @Override
     public ApiResponse<TechnicalResponseDTO> createTechnical(TechnicalRequestDTO technicalRequestDTO) {
         var technical = modelMapper.map(technicalRequestDTO, Technical.class);
-        validateTechnical(technical);
+        validateTechnical(technicalRequestDTO);
         technical.setAccount(accountRepository.getAccountById(technicalRequestDTO.getAccount()));
         technicalRepository.save(technical);
 
@@ -73,7 +73,7 @@ public class TechnicalServiceImpl implements TechnicalService {
             return new ApiResponse<>("Technical not found", Estatus.ERROR, null);
         } else {
             Technical technical = technicalOptional.get();
-            validateTechnical(technical);
+            validateTechnical(technicalRequestDTO);
             modelMapper.map(technicalRequestDTO, technical);
             technical.setAccount(accountRepository.getAccountById(technicalRequestDTO.getAccount()));
             technicalRepository.save(technical);
@@ -94,15 +94,16 @@ public class TechnicalServiceImpl implements TechnicalService {
         }
     }
 
-    private void validateTechnical(Technical technical) {
+    private void validateTechnical(TechnicalRequestDTO technical) {
         if (isTechnicalNumberExists(technical.getNumber())) {
             throw new ValidationException("There is already a technician with the same technical number");
         }
         if (isPoliceRecordsExists(technical.getPoliceRecords())) {
             throw new ValidationException("There is already a technician with the same police records");
-        }
-
-
+        }/*
+        if (!isValidateRole(technical.getAccount())) {
+            throw new ValidationException("The role provided is not valid");
+        }*/
     }
 
     private boolean isTechnicalNumberExists(String number) {
@@ -112,5 +113,9 @@ public class TechnicalServiceImpl implements TechnicalService {
     private boolean isPoliceRecordsExists(String policeRecords) {
         return technicalRepository.existsByPoliceRecords(policeRecords);
     }
+    /*
+    private boolean isValidateRole(int roleId) {
+        return technicalRepository.searchByAccount_Role_Id(roleId) == 2;
+    }*/
 
 }
