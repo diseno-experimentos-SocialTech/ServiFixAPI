@@ -14,6 +14,7 @@ import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.JobRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.PublicationRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.UserRepository;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.hibernate.sql.ast.tree.expression.Over;
@@ -66,6 +67,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     public ApiResponse<PublicationResponseDTO> createPublication(PublicationRequestDTO publicationRequestDTO) {
         var publication = modelMapper.map(publicationRequestDTO, Publication.class);
+        ValidatePublication(publicationRequestDTO);
         publication.setUser(userRepository.getUserById(publicationRequestDTO.getUser()));
         publication.setJob(jobRepository.getJobById(publicationRequestDTO.getJob()));
         publicationRepository.save(publication);
@@ -84,6 +86,7 @@ public class PublicationServiceImpl implements PublicationService {
         }else {
             Publication publication = publicationOptional.get();
             modelMapper.map(publicationRequestDTO, publication);
+            ValidateUpdatePublication(id, publicationRequestDTO);
             publication.setUser(userRepository.getUserById(publicationRequestDTO.getUser()));
             publication.setJob(jobRepository.getJobById(publicationRequestDTO.getJob()));
             publicationRepository.save(publication);
@@ -113,5 +116,33 @@ public class PublicationServiceImpl implements PublicationService {
                 .collect(Collectors.toList());
 
         return new ApiResponse<>("All publications fetched successfully", Estatus.SUCCESS, publicationResponseDTOList);
+    }
+
+    private void ValidatePublication(PublicationRequestDTO publicationRequestDTO) {
+        if (!isValidateAmount(publicationRequestDTO.getAmount())) {
+            throw new ValidationException("Amount must be greater than 0");
+        }
+        if (isExistsPublicationByTitleByDescriptionByAddress(publicationRequestDTO.getTitle(), publicationRequestDTO.getDescription(), publicationRequestDTO.getAddress())) {
+            throw new ValidationException("There is already a publication with the same title, description and address");
+        }
+    }
+    private void ValidateUpdatePublication(int id, PublicationRequestDTO publicationRequestDTO) {
+        if (!isValidateAmount(publicationRequestDTO.getAmount())) {
+            throw new ValidationException("Amount must be greater than 0");
+        }
+        if (isExistsPublicationByTitleByDescriptionByAddressById(publicationRequestDTO.getTitle(), publicationRequestDTO.getDescription(), publicationRequestDTO.getAddress(), id)) {
+            throw new ValidationException("There is already a publication with the same title, description and address");
+        }
+    }
+
+    private boolean isValidateAmount(double amount) {
+        return amount > 0;
+    }
+
+    private boolean isExistsPublicationByTitleByDescriptionByAddress(String title, String description, String address) {
+        return publicationRepository.existsByTitleAndDescriptionAndAddress(title, description, address);
+    }
+    private boolean isExistsPublicationByTitleByDescriptionByAddressById(String title, String description, String address, int id) {
+        return publicationRepository.existsByTitleAndDescriptionAndAddressAndIdNot(title, description, address, id);
     }
 }

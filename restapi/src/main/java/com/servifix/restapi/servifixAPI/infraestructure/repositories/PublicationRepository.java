@@ -10,4 +10,8 @@ public interface PublicationRepository extends CrudRepository<Publication, Integ
     List<Publication> getPublicationByUserId(Integer userId);
 
     Publication getPublicationById(Integer id);
+
+    boolean existsByTitleAndDescriptionAndAddress(String title, String description, String address);
+
+    boolean existsByTitleAndDescriptionAndAddressAndIdNot(String title, String description, String address, int id);
 }
