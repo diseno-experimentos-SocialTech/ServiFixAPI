@@ -9,6 +9,7 @@ import com.servifix.restapi.servifixAPI.domain.entities.Account;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.RoleRepository;
 import com.servifix.restapi.shared.exception.CustomException;
+import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -41,9 +44,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResponse<RegisteredUserResponseDto> registerUser(RegisterRequestDto request) {
         //si el email ya está registrado
-        if (accountRepository.existsByEmail(request.getEmail())) {
-            throw new CustomException(HttpStatus.CONFLICT, "The email '" + request.getEmail() + "' is already registered, please try another one");
-        }
+        validateAccount(request);
 
         //si no existe, lo registra
         var account = Account.builder()
@@ -84,4 +85,60 @@ public class AuthServiceImpl implements AuthService {
         var responseData = new TokenResponseDto(token);
         return new ApiResponse<>("Authentication Success", Estatus.SUCCESS, responseData);
     }
+
+
+    private void validateAccount(RegisterRequestDto request) {
+        if (!isValidateGender(request.getGender())) {
+            throw new ValidationException("The gender provided is not valid");
+        }
+        if (!isValidateEmail(request.getEmail())) {
+            throw new ValidationException("The email provided is not valid");
+        }
+        if (!isAdult(request.getBirthday())) {
+            throw new ValidationException("The user must be at least 18 years old to register");
+        }
+        if (!isPasswordStrong(request.getPassword())) {
+            throw new ValidationException("The password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and no spaces");
+        }
+        if (!isValidRole(request.getRole())) {
+            throw new ValidationException("The role provided is not valid");
+        }
+        if (isEmailExists(request.getEmail())) {
+            throw new ValidationException("The email provided is already registered");
+        }
+    }
+
+
+    private boolean isValidateGender(String gender) {
+        return gender.equals("Femenino") || gender.equals("Masculino") || gender.equals("Otro") || gender.equals("Prefiero no decirlo");
+    }
+    /*
+    private  boolean isValidateEmail(String email) {
+        return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+    }
+    */
+
+    private boolean isValidateEmail(String email) {
+        // Expresión regular que valida las cuentas de Gmail, Outlook y Hotmail
+        String regex = "^[\\w-\\.]+@(gmail\\.com|outlook\\.(com|es)|hotmail\\.com)$";
+        return email.matches(regex);
+    }
+
+    private boolean isAdult(LocalDate birthday) {
+        return birthday.plusYears(18).isBefore(LocalDate.now());
+    }
+
+    private boolean isPasswordStrong(String password) {
+        return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$");
+    }
+    private boolean isValidRole(int roleId) {
+        return roleId == 1 || roleId == 2;
+    }
+
+    private boolean isEmailExists(String email) {
+        return accountRepository.existsByEmail(email);
+    }
+
+
+
 }

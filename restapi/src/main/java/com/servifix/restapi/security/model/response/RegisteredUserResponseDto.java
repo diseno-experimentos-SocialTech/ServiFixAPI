@@ -18,6 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class RegisteredUserResponseDto {
 
+    private int id;
+
     private String firstName;
 
     private String lastName;
