@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -82,7 +83,15 @@ public class AuthServiceImpl implements AuthService {
         //se obtiene el token
         String token = jwtTokenProvider.generateToken(authentication);
 
-        var responseData = new TokenResponseDto(token);
+        //se obtiene usuario autenticado
+        Optional<Account> account = accountRepository.findByEmail(request.getEmail());
+
+        //var responseData = new TokenResponseDto(token);
+        TokenResponseDto responseData = TokenResponseDto.builder()
+                .id(account.get().getId())
+                .token(token)
+                .build();
+
         return new ApiResponse<>("Authentication Success", Estatus.SUCCESS, responseData);
     }
 
