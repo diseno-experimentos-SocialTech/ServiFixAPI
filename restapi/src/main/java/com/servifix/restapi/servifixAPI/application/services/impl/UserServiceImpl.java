@@ -42,11 +42,15 @@ public class UserServiceImpl implements UserService {
 
             User user = userRepository.getUserByAccount_Id(account_id);
 
-            UserResponseDTO responseDTO = modelMapper.map(user, UserResponseDTO.class);
+            if (user == null) {
+                return new ApiResponse<>("User not found", Estatus.ERROR, null);
+            }else{
+                UserResponseDTO responseDTO = modelMapper.map(user, UserResponseDTO.class);
 
-            responseDTO.setAccount(account);
+                responseDTO.setAccount(account);
 
-            return new ApiResponse<>("User fetched successfully", Estatus.SUCCESS, responseDTO);
+                return new ApiResponse<>("User fetched successfully", Estatus.SUCCESS, responseDTO);
+            }
         }
     }
 

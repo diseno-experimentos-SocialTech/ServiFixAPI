@@ -20,4 +20,6 @@ public interface TechnicalRepository extends CrudRepository<Technical, Integer> 
     boolean existsByPoliceRecordsAndIdNot(String policeRecords, int id);
 
     boolean existsByAccount_IdAndIdNot(int account_id, int id);
+
+    Technical getTechnicalByAccount_Id(int account_id);
 }

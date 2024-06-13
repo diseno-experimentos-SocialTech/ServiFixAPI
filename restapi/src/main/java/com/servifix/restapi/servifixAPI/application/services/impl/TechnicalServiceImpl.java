@@ -5,6 +5,7 @@ import com.servifix.restapi.servifixAPI.application.dto.request.UserRequestDTO;
 import com.servifix.restapi.servifixAPI.application.dto.response.TechnicalResponseDTO;
 import com.servifix.restapi.servifixAPI.application.dto.response.UserResponseDTO;
 import com.servifix.restapi.servifixAPI.application.services.TechnicalService;
+import com.servifix.restapi.servifixAPI.domain.entities.Account;
 import com.servifix.restapi.servifixAPI.domain.entities.Technical;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
@@ -30,6 +31,29 @@ public class TechnicalServiceImpl implements TechnicalService {
         this.technicalRepository = technicalRepository;
         this.accountRepository = accountRepository;
         this.modelMapper = modelMapper;
+    }
+
+    @Override
+    public ApiResponse<TechnicalResponseDTO> getTechnicalByAccount(int account_id) {
+        Optional<Account> accountOptional = accountRepository.findById(account_id);
+
+        if (accountOptional.isEmpty()) {
+            return new ApiResponse<>("Account not found", Estatus.ERROR, null);
+        } else {
+            Account account = accountOptional.get();
+
+            Technical technical = technicalRepository.getTechnicalByAccount_Id(account_id);
+
+            if (technical == null) {
+                return new ApiResponse<>("Technical not found", Estatus.ERROR, null);
+            }else{
+                TechnicalResponseDTO responseDTO = modelMapper.map(technical, TechnicalResponseDTO.class);
+
+                responseDTO.setAccount(account);
+
+                return new ApiResponse<>("Technical fetched successfully", Estatus.SUCCESS, responseDTO);
+            }
+        }
     }
 
     @Override

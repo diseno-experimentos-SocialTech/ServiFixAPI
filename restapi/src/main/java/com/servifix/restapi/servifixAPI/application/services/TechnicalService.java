@@ -18,4 +18,6 @@ public interface TechnicalService {
 
     ApiResponse<TechnicalResponseDTO> updateTechnical(int id, TechnicalRequestDTO TechnicalRequestDTO);
 
+    ApiResponse<TechnicalResponseDTO> getTechnicalByAccount(int account_id);
+
 }

@@ -32,6 +32,13 @@ public class TechnicalController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @Operation(summary = "get a technical by account")
+    @GetMapping("/technicals/account/{account_id}")
+    public ResponseEntity<ApiResponse<TechnicalResponseDTO>> getTechnicalByAccount(@PathVariable("account_id") int account_id) {
+        ApiResponse<TechnicalResponseDTO> response = technicalService.getTechnicalByAccount(account_id);
+        return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
     @Operation(summary = "get a technical by id")
     @GetMapping("/technicals/{id}")
     public ResponseEntity<ApiResponse<TechnicalResponseDTO>> getTechnicalById(@PathVariable("id") int id) {
