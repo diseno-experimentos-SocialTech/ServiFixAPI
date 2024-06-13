@@ -1,10 +1,10 @@
 package com.servifix.restapi.servifixAPI.application.services.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.servifix.restapi.servifixAPI.application.dto.request.UserRequestDTO;
+import com.servifix.restapi.servifixAPI.application.dto.response.AccountResponseDTO;
 import com.servifix.restapi.servifixAPI.application.dto.response.UserResponseDTO;
-import com.servifix.restapi.servifixAPI.application.services.AccountService;
 import com.servifix.restapi.servifixAPI.application.services.UserService;
+import com.servifix.restapi.servifixAPI.domain.entities.Account;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.UserRepository;
@@ -29,6 +29,25 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.accountRepository = accountRepository;
+    }
+
+    @Override
+    public ApiResponse<UserResponseDTO> getUserByAccount(int account_id) {
+        Optional<Account> accountOptional = accountRepository.findById(account_id);
+
+        if (accountOptional.isEmpty()) {
+            return new ApiResponse<>("Account not found", Estatus.ERROR, null);
+        } else {
+            Account account = accountOptional.get();
+
+            User user = userRepository.getUserByAccount_Id(account_id);
+
+            UserResponseDTO responseDTO = modelMapper.map(user, UserResponseDTO.class);
+
+            responseDTO.setAccount(account);
+
+            return new ApiResponse<>("User fetched successfully", Estatus.SUCCESS, responseDTO);
+        }
     }
 
     @Override

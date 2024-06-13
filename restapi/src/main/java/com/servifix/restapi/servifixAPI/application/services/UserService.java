@@ -16,4 +16,6 @@ public interface UserService {
     ApiResponse<UserResponseDTO> createUser(UserRequestDTO userRequestDTO);
 
     ApiResponse<UserResponseDTO> updateUser(int id, UserRequestDTO userRequestDTO);
+
+    ApiResponse<UserResponseDTO> getUserByAccount(int account_id);
 }

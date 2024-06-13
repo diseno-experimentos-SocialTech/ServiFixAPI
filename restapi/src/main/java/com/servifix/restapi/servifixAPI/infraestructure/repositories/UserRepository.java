@@ -16,4 +16,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     boolean existsByAccount_IdAndIdNot(int account_id, int id);
 
     boolean existsByNumberAndIdNot(String number, int id);
+
+    User getUserByAccount_Id(int account_id);
 }

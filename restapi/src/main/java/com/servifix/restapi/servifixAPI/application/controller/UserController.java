@@ -33,6 +33,13 @@ public class UserController {
         return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "get a user by account id")
+    @GetMapping("/users/account/{account_id}")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> getUserByAccount(@PathVariable("account_id") int account_id) {
+        ApiResponse<UserResponseDTO> response = userService.getUserByAccount(account_id);
+        return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
     @Operation(summary = "get all users")
     @GetMapping("/users")
     public ResponseEntity<ApiResponse<List<UserResponseDTO>>> getAllUsers() {
