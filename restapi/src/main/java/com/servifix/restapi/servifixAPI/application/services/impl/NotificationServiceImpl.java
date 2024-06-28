@@ -9,6 +9,7 @@ import com.servifix.restapi.servifixAPI.domain.entities.Notification;
 import com.servifix.restapi.servifixAPI.domain.entities.User;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.AccountRepository;
 import com.servifix.restapi.servifixAPI.infraestructure.repositories.NotificationRepository;
+import com.servifix.restapi.servifixAPI.infraestructure.repositories.OfferRepository;
 import com.servifix.restapi.shared.exception.ValidationException;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 import com.servifix.restapi.shared.model.enums.Estatus;
@@ -24,11 +25,13 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final ModelMapper modelMapper;
     private final AccountRepository accountRepository;
+    private final OfferRepository offerRepository;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository, ModelMapper modelMapper, AccountRepository accountRepository) {
+    public NotificationServiceImpl(OfferRepository offerRepository, NotificationRepository notificationRepository, ModelMapper modelMapper, AccountRepository accountRepository) {
         this.notificationRepository = notificationRepository;
         this.modelMapper = modelMapper;
         this.accountRepository = accountRepository;
+        this.offerRepository = offerRepository;
     }
 
     @Override
@@ -48,6 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
         var notification = modelMapper.map(notificationRequestDTO, Notification.class);
         validateNotification(notificationRequestDTO);
         notification.setAccount(accountRepository.getAccountById(notificationRequestDTO.getAccount()));
+        notification.setOffer(offerRepository.getOfferById(notificationRequestDTO.getOffer()));
         notificationRepository.save(notification);
 
         var response = modelMapper.map(notification, NotificationResponseDTO.class);

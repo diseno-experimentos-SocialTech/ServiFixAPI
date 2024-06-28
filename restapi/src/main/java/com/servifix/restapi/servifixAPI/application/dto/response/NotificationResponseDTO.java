@@ -1,6 +1,7 @@
 package com.servifix.restapi.servifixAPI.application.dto.response;
 
 import com.servifix.restapi.servifixAPI.domain.entities.Account;
+import com.servifix.restapi.servifixAPI.domain.entities.Offer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,4 +22,6 @@ public class NotificationResponseDTO {
     private LocalDate date;
 
     private Account account;
+
+    private Offer offer;
 }

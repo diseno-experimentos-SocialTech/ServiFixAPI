@@ -26,4 +26,7 @@ public class NotificationRequestDTO {
     @NotBlank(message = "Account is required")
     private int account;
 
+    @NotBlank(message = "Offer is required")
+    private int offer;
+
 }
