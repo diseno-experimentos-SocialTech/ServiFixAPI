@@ -3,7 +3,7 @@ package com.servifix.restapi.servifixAPI.infraestructure.repositories;
 import com.servifix.restapi.servifixAPI.domain.entities.Technical;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface TechnicalRepository extends CrudRepository<Technical, Integer> {
 
@@ -27,4 +27,7 @@ public interface TechnicalRepository extends CrudRepository<Technical, Integer> 
 
     Technical getTechnicalByAccount_LastName(String lastName);
 
+    List<Technical> findByAccount_FirstNameStartingWith(String firstName);
+
+    List<Technical> findByAccount_LastNameStartingWith(String lastName);
 }

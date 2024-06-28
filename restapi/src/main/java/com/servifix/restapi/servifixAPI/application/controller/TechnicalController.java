@@ -81,4 +81,18 @@ public class TechnicalController {
         return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "get technicals by first name starting with")
+    @GetMapping("/technicals/firstNameStartingWith/{firstName}")
+    public ResponseEntity<ApiResponse<List<TechnicalResponseDTO>>> getTechnicalByAccount_FirstNameStartingWith(@PathVariable("firstName") String firstName) {
+        ApiResponse<List<TechnicalResponseDTO>> response = technicalService.getTechnicalByAccount_FirstNameStartingWith(firstName);
+        return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(summary = "get technicals by last name starting with")
+    @GetMapping("/technicals/lastNameStartingWith/{lastName}")
+    public ResponseEntity<ApiResponse<List<TechnicalResponseDTO>>> getTechnicalByAccount_LastNameStartingWith(@PathVariable("lastName") String lastName) {
+        ApiResponse<List<TechnicalResponseDTO>> response = technicalService.getTechnicalByAccount_LastNameStartingWith(lastName);
+        return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
 }

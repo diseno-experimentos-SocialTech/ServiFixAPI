@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,6 +64,15 @@ public class NotificationServiceImpl implements NotificationService {
     public ApiResponse<Void> deleteNotification(int id){
         notificationRepository.deleteById(id);
         return new ApiResponse<>("Notification deleted successfully", Estatus.SUCCESS, null);
+    }
+
+    @Override
+    public ApiResponse<List<NotificationResponseDTO>> getNotificationByAccount(int account_id) {
+        List<Notification> notifications = notificationRepository.findByAccount_Id(account_id);
+        List<NotificationResponseDTO> responseDTO = notifications.stream()
+                .map(notification -> modelMapper.map(notification, NotificationResponseDTO.class))
+                .toList();
+        return new ApiResponse<>("Notifications fetched successfully", Estatus.SUCCESS, responseDTO);
     }
 
     private void validateNotification(NotificationRequestDTO notification) {

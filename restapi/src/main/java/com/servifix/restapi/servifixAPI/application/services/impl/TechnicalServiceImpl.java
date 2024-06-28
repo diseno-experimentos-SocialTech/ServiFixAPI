@@ -154,6 +154,26 @@ public class TechnicalServiceImpl implements TechnicalService {
         }
     }
 
+    @Override
+    public ApiResponse<List<TechnicalResponseDTO>> getTechnicalByAccount_FirstNameStartingWith(String firstName) {
+        List<Technical> technicalList = technicalRepository.findByAccount_FirstNameStartingWith(firstName);
+        List<TechnicalResponseDTO> technicalResponseDTOList = technicalList.stream()
+                .map(entity -> modelMapper.map(entity, TechnicalResponseDTO.class))
+                .collect(Collectors.toList());
+
+        return new ApiResponse<>("All technicals fetched successfully", Estatus.SUCCESS, technicalResponseDTOList);
+    }
+
+    @Override
+    public ApiResponse<List<TechnicalResponseDTO>> getTechnicalByAccount_LastNameStartingWith(String lastName) {
+        List<Technical> technicalList = technicalRepository.findByAccount_LastNameStartingWith(lastName);
+        List<TechnicalResponseDTO> technicalResponseDTOList = technicalList.stream()
+                .map(entity -> modelMapper.map(entity, TechnicalResponseDTO.class))
+                .collect(Collectors.toList());
+
+        return new ApiResponse<>("All technicals fetched successfully", Estatus.SUCCESS, technicalResponseDTOList);
+    }
+
 
     private void validateTechnical(TechnicalRequestDTO technical) {
         if (!isValidNumber(technical.getNumber())) {

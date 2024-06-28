@@ -24,4 +24,8 @@ public interface TechnicalService {
 
     ApiResponse<TechnicalResponseDTO> getTechnicalByAccount_LastName(String lastName);
 
+    ApiResponse<List<TechnicalResponseDTO>> getTechnicalByAccount_FirstNameStartingWith(String firstName);
+
+    ApiResponse<List<TechnicalResponseDTO>> getTechnicalByAccount_LastNameStartingWith(String lastName);
+
 }

@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Notification", description = "Notification API")
 @RestController
 @RequestMapping("/api/v1/servifix")
@@ -41,6 +43,13 @@ public class NotificationController {
     @DeleteMapping("/notifications/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteNotification(@PathVariable("id") int id) {
         var res = notificationService.deleteNotification(id);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all notifications by account")
+    @GetMapping("/notifications/account/{account_id}")
+    public ResponseEntity<ApiResponse<List<NotificationResponseDTO>>> getNotificationByAccount(@PathVariable("account_id") int account_id) {
+        var res = notificationService.getNotificationByAccount(account_id);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

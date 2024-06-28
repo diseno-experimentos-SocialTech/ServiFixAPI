@@ -4,6 +4,8 @@ import com.servifix.restapi.servifixAPI.application.dto.request.NotificationRequ
 import com.servifix.restapi.servifixAPI.application.dto.response.NotificationResponseDTO;
 import com.servifix.restapi.shared.model.dto.response.ApiResponse;
 
+import java.util.List;
+
 public interface NotificationService {
 
     ApiResponse<NotificationResponseDTO> getNotificationById(int id);
@@ -12,6 +14,5 @@ public interface NotificationService {
 
     ApiResponse<NotificationResponseDTO> createNotification(NotificationRequestDTO notificationRequestDTO);
 
-
-    //ApiResponse<NotificationResponseDTO> getNotificationsByAccountId();
+    ApiResponse<List<NotificationResponseDTO>> getNotificationByAccount(int account_id);
 }
