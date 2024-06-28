@@ -22,4 +22,9 @@ public interface TechnicalRepository extends CrudRepository<Technical, Integer> 
     boolean existsByAccount_IdAndIdNot(int account_id, int id);
 
     Technical getTechnicalByAccount_Id(int account_id);
+
+    Technical getTechnicalByAccount_FirstName(String firstName);
+
+    Technical getTechnicalByAccount_LastName(String lastName);
+
 }

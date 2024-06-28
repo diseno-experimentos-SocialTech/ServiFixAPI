@@ -20,4 +20,8 @@ public interface TechnicalService {
 
     ApiResponse<TechnicalResponseDTO> getTechnicalByAccount(int account_id);
 
+    ApiResponse<TechnicalResponseDTO> getTechnicalByAccount_FirstName(String firstName);
+
+    ApiResponse<TechnicalResponseDTO> getTechnicalByAccount_LastName(String lastName);
+
 }

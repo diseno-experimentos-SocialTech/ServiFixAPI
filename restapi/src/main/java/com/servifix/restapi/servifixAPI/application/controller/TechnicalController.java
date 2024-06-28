@@ -66,4 +66,19 @@ public class TechnicalController {
         var res = technicalService.deleteTechnical(id);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+    @Operation(summary = "get a technical by first name")
+    @GetMapping("/technicals/firstName/{firstName}")
+    public ResponseEntity<ApiResponse<TechnicalResponseDTO>> getTechnicalByAccount_FirstName(@PathVariable("firstName") String firstName) {
+        ApiResponse<TechnicalResponseDTO> response = technicalService.getTechnicalByAccount_FirstName(firstName);
+        return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(summary = "get a technical by last name")
+    @GetMapping("/technicals/lastName/{lastName}")
+    public ResponseEntity<ApiResponse<TechnicalResponseDTO>> getTechnicalByAccount_LastName(@PathVariable("lastName") String lastName) {
+        ApiResponse<TechnicalResponseDTO> response = technicalService.getTechnicalByAccount_LastName(lastName);
+        return new ResponseEntity<>(response, response.getStatus() == Estatus.SUCCESS ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
 }

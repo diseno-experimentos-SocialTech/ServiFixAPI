@@ -16,6 +16,7 @@ import com.servifix.restapi.shared.model.enums.Estatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -118,6 +119,41 @@ public class TechnicalServiceImpl implements TechnicalService {
             return new ApiResponse<>("Technical deleted successfully", Estatus.SUCCESS, null);
         }
     }
+
+    @Override
+    public ApiResponse<TechnicalResponseDTO> getTechnicalByAccount_FirstName(String firstName) {
+
+        Technical technical = technicalRepository.getTechnicalByAccount_FirstName(firstName);
+
+        if (technical == null) {
+            return new ApiResponse<>("Technical not found", Estatus.ERROR, null);
+        } else {
+
+            TechnicalResponseDTO responseDTO = modelMapper.map(technical, TechnicalResponseDTO.class);
+            responseDTO.setAccount(accountRepository.getAccountById(technical.getAccount().getId()));
+
+            return new ApiResponse<>("Technical fetched successfully", Estatus.SUCCESS, responseDTO);
+
+        }
+    }
+
+    @Override
+    public ApiResponse<TechnicalResponseDTO> getTechnicalByAccount_LastName(String lastName) {
+
+        Technical technicalOptional = technicalRepository.getTechnicalByAccount_LastName(lastName);
+
+        if (technicalOptional == null) {
+            return new ApiResponse<>("Technical not found", Estatus.ERROR, null);
+        } else {
+
+            TechnicalResponseDTO responseDTO = modelMapper.map(technicalOptional, TechnicalResponseDTO.class);
+            responseDTO.setAccount(accountRepository.getAccountById(technicalOptional.getAccount().getId()));
+
+            return new ApiResponse<>("Technical fetched successfully", Estatus.SUCCESS, responseDTO);
+
+        }
+    }
+
 
     private void validateTechnical(TechnicalRequestDTO technical) {
         if (!isValidNumber(technical.getNumber())) {

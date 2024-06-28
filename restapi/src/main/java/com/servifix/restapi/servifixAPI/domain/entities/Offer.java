@@ -37,7 +37,7 @@ public class Offer {
     private Publication publication;
 
     @Setter
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "StateOffer_id", nullable = false)
     private StateOffer stateOffer;
 
