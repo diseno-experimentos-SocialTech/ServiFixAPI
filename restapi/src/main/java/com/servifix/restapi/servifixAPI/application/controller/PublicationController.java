@@ -63,4 +63,11 @@ public class PublicationController {
         var res = publicationService.deletePublication(id);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+    @Operation(summary = "Get all publications by job")
+    @GetMapping("/publications/job/{id}")
+    public ResponseEntity<ApiResponse<List<PublicationResponseDTO>>> getPublicationsByJob(@PathVariable("id") int id) {
+        var res = publicationService.getPublicationByJobId(id);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }

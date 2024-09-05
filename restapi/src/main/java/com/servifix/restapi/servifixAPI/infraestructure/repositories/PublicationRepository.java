@@ -11,6 +11,8 @@ public interface PublicationRepository extends CrudRepository<Publication, Integ
 
     Publication getPublicationById(Integer id);
 
+    List<Publication> getPublicationByJobId(Integer jobId);
+
     boolean existsByTitleAndDescriptionAndAddress(String title, String description, String address);
 
     boolean existsByTitleAndDescriptionAndAddressAndIdNot(String title, String description, String address, int id);

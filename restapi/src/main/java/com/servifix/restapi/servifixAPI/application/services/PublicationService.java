@@ -20,4 +20,6 @@ public interface PublicationService {
 
     ApiResponse<Void> deletePublication(int id);
 
+    ApiResponse<List<PublicationResponseDTO>> getPublicationByJobId(int jobId);
+
 }

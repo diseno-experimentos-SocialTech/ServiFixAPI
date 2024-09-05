@@ -118,6 +118,17 @@ public class PublicationServiceImpl implements PublicationService {
         return new ApiResponse<>("All publications fetched successfully", Estatus.SUCCESS, publicationResponseDTOList);
     }
 
+    @Override
+    public ApiResponse<List<PublicationResponseDTO>> getPublicationByJobId(int jobId){
+        List<Publication> publicationList = publicationRepository.getPublicationByJobId(jobId);
+
+        List<PublicationResponseDTO> publicationResponseDTOList = publicationList.stream()
+                .map(entity -> modelMapper.map(entity, PublicationResponseDTO.class))
+                .collect(Collectors.toList());
+
+        return new ApiResponse<>("All publications fetched successfully", Estatus.SUCCESS, publicationResponseDTOList);
+    }
+
     private void ValidatePublication(PublicationRequestDTO publicationRequestDTO) {
         if (!isValidateAmount(publicationRequestDTO.getAmount())) {
             throw new ValidationException("Amount must be greater than 0");
@@ -126,6 +137,7 @@ public class PublicationServiceImpl implements PublicationService {
             throw new ValidationException("There is already a publication with the same title, description and address");
         }
     }
+
     private void ValidateUpdatePublication(int id, PublicationRequestDTO publicationRequestDTO) {
         if (!isValidateAmount(publicationRequestDTO.getAmount())) {
             throw new ValidationException("Amount must be greater than 0");
