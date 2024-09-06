@@ -38,6 +38,13 @@ public class OfferServiceImpl implements OfferService {
         this.publicationRepository = publicationRepository;
         this.stateOfferRepository = stateOfferRepository;
     }
+    public OfferServiceImpl() {
+        this.offerRepository = null;
+        this.modelMapper = null;
+        this.technicalRepository = null;
+        this.publicationRepository = null;
+        this.stateOfferRepository = null;
+    }
 
     @Override
     public ApiResponse<OfferResponseDTO> getOfferById(int id) {
@@ -106,7 +113,7 @@ public class OfferServiceImpl implements OfferService {
             offerRepository.save(offer);
 
             OfferResponseDTO responseDTO = modelMapper.map(offer, OfferResponseDTO.class);
-            return new ApiResponse<>("Offer updated successfully", Estatus.SUCCESS, responseDTO);
+                return new ApiResponse<>("Offer updated successfully", Estatus.SUCCESS, responseDTO);
         } else {
             return new ApiResponse<>("Offer not found", Estatus.ERROR, null);
         }
@@ -122,4 +129,10 @@ public class OfferServiceImpl implements OfferService {
             return new ApiResponse<>("Offer not found", Estatus.ERROR, null);
         }
     }
+    //validar que el rol del tecnico sea la misma que la oferta
+    public boolean validateTechnicalRole(OfferRequestDTO offerRequestDTO){
+        return offerRequestDTO.getTechnical() == technicalRepository.getTechnicalById(offerRequestDTO.getTechnical()).getAccount().getRole().getId();
+    }
+
+
 }

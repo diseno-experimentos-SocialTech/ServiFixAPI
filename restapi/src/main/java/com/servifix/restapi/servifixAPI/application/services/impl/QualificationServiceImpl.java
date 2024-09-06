@@ -29,7 +29,12 @@ public class QualificationServiceImpl implements QualificationService {
         this.offerRepository = offerRepository;
         this.modelMapper = modelMapper;
     }
-
+    public QualificationServiceImpl() {
+        this.qualificationRepository = null;
+        this.reviewRepository = null;
+        this.offerRepository = null;
+        this.modelMapper = null;
+    }
     @Override
     public ApiResponse<QualificationResponseDTO> getQualificationById(int id) {
         Optional<Qualification> qualificationOptional = qualificationRepository.findById(id);
@@ -63,6 +68,10 @@ public class QualificationServiceImpl implements QualificationService {
 
     @Override
     public ApiResponse<QualificationResponseDTO> createQualification(QualificationRequestDTO qualificationRequestDTO) {
+
+        if (!isValidQualification(qualificationRequestDTO.getQuality())) {
+            return new ApiResponse<>("Invalid qualification", Estatus.ERROR, null);
+        }
         var qualification = modelMapper.map(qualificationRequestDTO, Qualification.class);
         qualification.setReview(reviewRepository.getReviewById(qualificationRequestDTO.getReview()));
         qualification.setOffer(offerRepository.getOfferById(qualificationRequestDTO.getOffer()));
@@ -97,6 +106,10 @@ public class QualificationServiceImpl implements QualificationService {
         } else {
             return new ApiResponse<>("Qualification not found", Estatus.ERROR, null);
         }
+    }
+
+    boolean isValidQualification(float qualification) {
+        return qualification >= 1 && qualification <= 5;
     }
 
 }
