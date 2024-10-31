@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     def mvnHome = tool 'Maven 3.6.3'
-                    sh "${mvnHome}/bin/mvn clean package"
+                    bat "${mvnHome}\\bin\\mvn clean package"
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     def mvnHome = tool 'Maven 3.6.3'
-                    sh "${mvnHome}/bin/mvn test"
+                    bat "${mvnHome}\\bin\\mvn test"
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     def mvnHome = tool 'Maven 3.6.3'
-                    sh "${mvnHome}/bin/mvn deploy"
+                    bat "${mvnHome}\\bin\\mvn deploy"
                 }
             }
         }
