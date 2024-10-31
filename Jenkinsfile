@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/diseno-experimentos-SocialTech/ServiFixAPI.git'
+                git branch: 'main', url: 'https://github.com/diseno-experimentos-SocialTech/ServiFixAPI.git'
             }
         }
 
@@ -49,6 +49,4 @@ pipeline {
             }
         }
     }
-
 }
-
