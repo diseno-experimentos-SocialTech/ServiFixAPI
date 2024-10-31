@@ -1,52 +1,31 @@
 pipeline {
     agent any
-
-    environment {
-        MAVEN_HOME = tool 'MAVEN_3_6_3' // Maven en Jenkins
-        JAVA_HOME = tool 'JDK_1_21' // JDK en Jenkins
+    tools {
+        maven 'MAVEN_3_6_3'
+        jdk 'JDK_1_21'
     }
-
     stages {
-        stage('Checkout') {
+        stage('Compile Stage') {
             steps {
-                git branch: 'main', url: 'https://github.com/diseno-experimentos-SocialTech/ServiFixAPI.git'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                script {
-                    def mvnHome = tool 'MAVEN_3_6_3'
-                    bat "${mvnHome}\\bin\\mvn clean package"
+                withMaven(maven: 'MAVEN_3_6_3') {
+                    bat 'mvn clean compile'
                 }
             }
         }
-
-        stage('Test') {
+        stage('Testing Stage') {
             steps {
-                script {
-                    def mvnHome = tool 'MAVEN_3_6_3'
-                    bat "${mvnHome}\\bin\\mvn test"
+                withMaven(maven: 'MAVEN_3_6_3') {
+                    bat 'mvn test'
                 }
             }
         }
-
-        stage('Deploy') {
+        stage('Package Stage') {
             steps {
-                script {
-                    def mvnHome = tool 'MAVEN_3_6_3'
-                    bat "${mvnHome}\\bin\\mvn deploy"
+                withMaven(maven: 'MAVEN_3_6_3') {
+                    bat 'mvn package'
                 }
-            }
-        }
-    }
-
-    post {
-        always {
-            node('windows') { // Usa la etiqueta de tu agente aquí
-                archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-                junit '**/target/surefire-reports/*.xml'
             }
         }
     }
 }
+
