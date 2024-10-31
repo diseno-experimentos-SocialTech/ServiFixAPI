@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.servifix</groupId>
-	<artifactId>restapi</artifactId>
+	<artifactId>ServiFixAPI</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>restapi</name>
+	<name>ServiFixAPI</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>21</java.version>
