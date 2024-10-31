@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = tool 'Maven 3.6.3' // Maven en Jenkins
-        JAVA_HOME = tool 'JDK 11' // JDK en Jenkins
+        MAVEN_HOME = tool 'MAVEN_3_6_3' // Maven en Jenkins
+        JAVA_HOME = tool 'JDK_1_21' // JDK en Jenkins
     }
 
     stages {
@@ -16,7 +16,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    def mvnHome = tool 'Maven 3.6.3'
+                    def mvnHome = tool 'MAVEN_3_6_3'
                     bat "${mvnHome}\\bin\\mvn clean package"
                 }
             }
@@ -25,7 +25,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    def mvnHome = tool 'Maven 3.6.3'
+                    def mvnHome = tool 'MAVEN_3_6_3'
                     bat "${mvnHome}\\bin\\mvn test"
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def mvnHome = tool 'Maven 3.6.3'
+                    def mvnHome = tool 'MAVEN_3_6_3'
                     bat "${mvnHome}\\bin\\mvn deploy"
                 }
             }
@@ -43,8 +43,11 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-            junit '**/target/surefire-reports/*.xml'
+            node {
+                archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+                junit '**/target/surefire-reports/*.xml'
+            }
         }
     }
 }
+
