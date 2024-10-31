@@ -43,8 +43,10 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-            junit '**/target/surefire-reports/*.xml'
+            node('windows') { // Usa la etiqueta de tu agente aquí
+                archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+                junit '**/target/surefire-reports/*.xml'
+            }
         }
     }
 
